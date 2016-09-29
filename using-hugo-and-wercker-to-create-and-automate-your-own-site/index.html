@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+      <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  	<meta property="og:title" content=" Using Hugo and Wercker to Create and Automate Your Own Site &middot;  3DSIM Software Engineering" />
+  	<meta property="og:site_name" content="3DSIM Software Engineering" />
+  	<meta property="og:url" content="https://3dsim.github.io/using-hugo-and-wercker-to-create-and-automate-your-own-site/" />
+
+    
+  	<meta property="og:type" content="article" />
+
+    <meta property="og:article:published_time" content="2016-05-28T15:51:23-06:00" />
+
+    
+    
+
+    <meta name="description" content="Changing the simulation world from a little ski town." />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+
+
+  <title>
+     Using Hugo and Wercker to Create and Automate Your Own Site &middot;  3DSIM Software Engineering
+  </title>
+      <link rel="shortcut icon" href="https://3dsim.github.io/images/favicon.ico">
+	  <link rel="apple-touch-icon" href="https://3dsim.github.io/images/apple-touch-icon.png" />
+
+    <link rel="stylesheet" type="text/css" href="https://3dsim.github.io/css/screen.css" />
+    <link rel="stylesheet" type="text/css" href="https://3dsim.github.io/css/nav.css" />
+    <link rel="stylesheet" type="text/css" 
+          href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400|Inconsolata"
+    />
+
+    
+      
+          <link href="https://3dsim.github.io/index.xml" rel="alternate" 
+                type="application/rss+xml" title="3DSIM Software Engineering" 
+          />
+      
+      
+    
+    <meta name="generator" content="Hugo 0.15" />
+
+    <link rel="canonical" href="https://3dsim.github.io/using-hugo-and-wercker-to-create-and-automate-your-own-site/" />
+
+    
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-83905346-2', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+    
+
+    
+    <link rel="stylesheet" href="https://3dsim.github.io/css/highlightjs/tomorrow-night-eighties.css">
+    <script src="https://3dsim.github.io/js/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+
+
+</head>
+<body class="nav-closed">
+
+  <div class="nav">
+    <h3 class="nav-title">Menu</h3>
+    <a href="#" class="nav-close">
+        <span class="hidden">Close</span>
+    </a>
+    <ul>
+        
+        
+        
+            
+            <li class="nav-opened" role="presentation">
+            	<a href="https://3dsim.github.io/">Engineering Blog</a>
+            </li>
+        
+            
+            <li class="nav-opened" role="presentation">
+            	<a href="http://3dsim.com">Main Company Site</a>
+            </li>
+        
+            
+            <li class="nav-opened" role="presentation">
+            	<a href="mailto:support@3dsim.com">Contact us</a>
+            </li>
+        
+    </ul>
+    
+    
+    <a class="subscribe-button icon-feed" href="https://3dsim.github.io/index.xml">Subscribe</a>
+    
+</div>
+<span class="nav-cover"></span>
+
+
+ <div class="site-wrapper">
+
+
+
+    
+
+
+  <header class="main-header post-head" style="background-image: url(/images/cover_small.jpg)">
+
+
+      <nav class="main-nav overlay clearfix">
+        
+            <a class="blog-logo" href="https://3dsim.github.io/"><img src="https://3dsim.github.io/images/3DSIMLogoOnly.png" alt="Blog Logo" /></a>
+        
+        
+            <a class="menu-button" href="#"><span class="burger">&#9776;</span><span class="word">Menu</span></a>
+        
+    </nav>
+ 
+
+   <div class="vertical">
+        <div class="main-header-content inner">
+          
+        </div>
+    </div>
+</header>
+
+
+
+
+<main class="content" role="main">
+
+  <article class="post post">
+
+    <header class="post-header">
+        <h1 class="post-title">Using Hugo and Wercker to Create and Automate Your Own Site</h1>
+        <small></small>
+
+        
+
+
+
+
+
+<section class="post-meta">
+  
+    
+      <img class="author-thumb" src="https://s.gravatar.com/avatar/c9079ca00a3b670571d25f2e23023d0e?s=80" alt="Author image" nopin="nopin" />
+    
+  
+
+  
+  ryanwalls
+
+  <time class="post-date" datetime="2016-05-28T15:51:23-06:00">
+    28 May 2016
+  </time>
+  <div class="post-tag">
+  
+  </div>
+  
+</section>
+
+    </header>
+
+    <section class="post-content">
+      
+
+<p>As engineers making our own blog, we all naturally want to make it AAAAAAWESOOOME.  We want a cool language.  We want to use git everywhere.  We want PRs!  We want it to be fast.  We want automation, lots and lots of automation.  We also want it simple.  Like &ldquo;1 or 2 hours&rdquo; simple.</p>
+
+<p>This blog you&rsquo;re reading has all of that.</p>
+
+<p>It&hellip;. Is&hellip;.. Awesome.</p>
+
+<p>But we can&rsquo;t really take credit.  Thanks to <a href="https://gohugo.io">Hugo</a>, <a href="https://github.com">Github</a>, and <a href="http://wercker.com">Wercker</a> you too can have an have an AAAAAAWESOOOME site or blog.</p>
+
+<p>What this combination gives you:</p>
+
+<ul>
+<li><strong>Cool language?</strong>  Hugo is based on <a href="https://golang.org/">Go</a>.  Check.  (My love of Go will be professed in a future post.)</li>
+<li><strong>Git integration?</strong>  This site is deployed to <a href="https://pages.github.com">github pages</a>.  This site is regenerated and deployed every time we push to the main repo.</li>
+<li><strong>PRs?</strong>  We only push to the main repo through PRs from our individual forks.  For those new to git flow, check out this article: <a href="http://scottchacon.com/2011/08/31/github-flow.html">http://scottchacon.com/2011/08/31/github-flow.html</a></li>
+<li><strong>Fast?</strong>  Yep, super fast.  Hugo is a static site generator, meaning it creates plain old HTML.  Browsers are very good at serving HTML quickly.  Also, Hugo generates the static content very quickly&hellip; about 1 ms per piece of content.  For this site, it seems instantaneous.</li>
+<li><strong>Automation?</strong>  That&rsquo;s where Wercker comes in.  You can have build and deploy steps for your github repo that get triggered automatically.  Credit goes to <a href="https://github.com/ArjenSchwarz/wercker-step-hugo-build">https://github.com/ArjenSchwarz/wercker-step-hugo-build</a> for creating a Hugo build step, and to <a href="https://github.com/lvivier/step-gh-pages">https://github.com/lvivier/step-gh-pages</a> for the step for deploying to Github Pages.<br /></li>
+<li><strong>Simple?</strong>  Honestly, start to finish it took me a full day to get everything working&hellip; but that includes research time.  If you&rsquo;re reading this, then you should be able to do it in a couple hours.  I&rsquo;ve done some of the research for you.  (i.e.  I found the only link you will need below.)</li>
+<li><strong>Pretty?</strong>  That wasn&rsquo;t in my original list above&hellip; pffft, engineers don&rsquo;t need &ldquo;pretty.&rdquo;  Well, I like pretty.  Sue me.  Visit <a href="https://themes.gohugo.io">https://themes.gohugo.io</a> to get a taste of what you could do by simply cloning the theme into your &ldquo;themes&rdquo; directory.<br /></li>
+</ul>
+
+<p>You&rsquo;re probably saying&hellip; &ldquo;Sounds awesome.  How do I do it?&rdquo;</p>
+
+<p>Simple.  The guide to awesome is here: <a href="http://gohugo.io/tutorials/automated-deployments">http://gohugo.io/tutorials/automated-deployments</a>.  Follow the steps in that tutorial.  If you want to see what I did while following those steps, read on&hellip;</p>
+
+<h2 id="an-example-our-corporate-site:1ea8ed4e6ee92abf713dabb5b8f697e5">An example, our corporate site</h2>
+
+<p>Following my own advice, I am now embarking on converting <a href="http://3dsim.com">our corporate site</a> to Hugo and Wercker.  I&rsquo;m going to capture the steps I take for posterity&hellip; and to show that setting up an awesome site from scratch is relatively straight forward.</p>
+
+<h3 id="hugo-site-setup:1ea8ed4e6ee92abf713dabb5b8f697e5">Hugo site setup</h3>
+
+<ul>
+<li>Create github repo.  e.g. <a href="https://github.com/3DSIM/corporate-site">https://github.com/3DSIM/corporate-site</a><br /></li>
+<li>Fork the repo.</li>
+<li>Clone the fork. <code>git clone git@github.com:ryanwalls/corporate-site.git</code></li>
+<li>Generate a new site directory structure.  <code>hugo new site corporate-site --force</code>  (The force option is necessary because our directory is not empty.)<br /></li>
+<li>Go into the cloned directory.  <code>cd corporate-site</code></li>
+<li>Create a git branch to work in.  <code>git checkout -b new-site</code></li>
+<li>Install a theme
+
+<ul>
+<li><code>mkdir themes &amp;&amp; cd themes</code></li>
+<li>Clone a theme.  E.g. <code>git clone git@github.com:digitalcraftsman/hugo-agency-theme.git</code></li>
+<li>In this case they had a sample <code>config.toml</code>, so copy it to root of your project <code>cp themes/hugo-agency-theme/exampleSite/config.toml .</code></li>
+<li>Remove the <code>.git</code> folder from the cloned theme: <code>rm -rf themes/hugo-agency-theme/.git</code></li>
+</ul></li>
+<li>Test that site starts <code>hugo server --buildDrafts --theme=hugo-agency-theme</code></li>
+<li>You&rsquo;ll want to customize your <code>config.toml</code> to fit your site.  (if you&rsquo;re new to toml read <a href="https://npf.io/2014/08/intro-to-toml">https://npf.io/2014/08/intro-to-toml</a>).  See the <a href="https://github.com/3DSIM/corporate-site">source for the corporate site</a> to see what we did with ours.</li>
+<li>Eventually you&rsquo;ll want to put content inside the <code>content</code> directory, but for now just put an empty file, README, or some other placeholder in there so that the directory gets committed later.  e.g.  <code>touch content/.keep</code>.  This is to accommodate one of the wercker build scripts we will use later that requires the <code>content</code> folder exists.<br /></li>
+</ul>
+
+<h3 id="configure-wercker:1ea8ed4e6ee92abf713dabb5b8f697e5">Configure Wercker</h3>
+
+<ul>
+<li>Create a <code>wercker.yml</code> file in the root of the site directory</li>
+</ul>
+
+<pre><code class="language-yaml">---
+  box: debian
+  build:
+    steps:
+      - arjen/hugo-build@1.9.2:
+          version: &quot;0.15&quot;
+          theme: hugo-agency-theme
+          flags: --buildDrafts=true
+  deploy:
+    steps:
+      - install-packages:
+          packages: git ssh-client
+      - lukevivier/gh-pages@0.2.1:
+          token: $GIT_TOKEN
+          basedir: public
+</code></pre>
+
+<ul>
+<li>Create application inside Wercker
+<img src="https://3dsim.github.io/images/posts/Using-Hugo-and-Wercker-to-Create-and-Automate-Your-Own-Site/wercker-create-application_small.png" alt="Create application" /></li>
+</ul>
+
+<p>NOTE: This is where the tutorial linked above that is on the Hugo documentation site is out of date.  Wercker just recently announced pipelines and workflows.</p>
+
+<ul>
+<li><p>Click on &ldquo;Manage Workflows&rdquo; while in your application
+<img src="https://3dsim.github.io/images/posts/Using-Hugo-and-Wercker-to-Create-and-Automate-Your-Own-Site/manage-workflows_small.png" alt="Manage workflows" /></p></li>
+
+<li><p>Click on &ldquo;Add pipeline&rdquo;
+<img src="https://3dsim.github.io/images/posts/Using-Hugo-and-Wercker-to-Create-and-Automate-Your-Own-Site/add-pipeline_small.png" alt="Add pipeline" /></p></li>
+
+<li><p>Configure the pipeline.  This references your deploy step in your <code>wercker.yml</code>.
+<img src="https://3dsim.github.io/images/posts/Using-Hugo-and-Wercker-to-Create-and-Automate-Your-Own-Site/pipeline-config_small.png" alt="Configure pipeline" /></p></li>
+
+<li><p>After you configure the pipeline, the next page allows you to configure environment variables for the pipeline.  Before filling this in, go to the next step&hellip; but keep this page open.</p></li>
+
+<li><p>Wercker needs to be able to access Github on your behalf to deploy to Github Pages.  To give wercker access, we will create a Personal Access Token.  If you&rsquo;re new to Personal Access Tokens, here&rsquo;s Github&rsquo;s intro: <a href="https://help.github.com/articles/creating-an-access-token-for-command-line-use">https://help.github.com/articles/creating-an-access-token-for-command-line-use</a>.  Follow the steps in that article to generate a token.  Here&rsquo;s the box I checked for this personal access token:
+<img src="https://3dsim.github.io/images/posts/Using-Hugo-and-Wercker-to-Create-and-Automate-Your-Own-Site/personal-access-token_small.png" alt="Personal Access Token" /></p></li>
+
+<li><p>We can now configure the <code>GIT_TOKEN</code> environment variable that was defined in the <code>wercker.yml</code> above.  Copy the personal access token from last step and enter it on the Wercker &ldquo;Environment variables&rdquo; configuration page.  Name it <code>GIT_TOKEN</code> and set it as protected.  Click &ldquo;Add.&rdquo;
+<img src="https://3dsim.github.io/images/posts/Using-Hugo-and-Wercker-to-Create-and-Automate-Your-Own-Site/git-token_small.png" alt="Configure GIT_TOKEN" />.</p></li>
+
+<li><p>We now need to configure our workflow to use the &ldquo;deploy&rdquo; step we just defined.  Click on the &ldquo;&lt; Workflows&rdquo; link.
+<img src="https://3dsim.github.io/images/posts/Using-Hugo-and-Wercker-to-Create-and-Automate-Your-Own-Site/workflows_small.png" alt="Workflows link" />.</p></li>
+</ul>
+
+<p>Then click the &ldquo;+&rdquo; button after your &ldquo;build&rdquo; step
+<img src="https://3dsim.github.io/images/posts/Using-Hugo-and-Wercker-to-Create-and-Automate-Your-Own-Site/clickworkflowplus_small.png" alt="Add workflow step" />.</p>
+
+<p>And configure the deploy step to deploy your &ldquo;master&rdquo; branch.  Click &ldquo;Add.&rdquo;
+<img src="https://3dsim.github.io/images/posts/Using-Hugo-and-Wercker-to-Create-and-Automate-Your-Own-Site/workflow-step_small.png" alt="Configure workflow step" />.</p>
+
+<h3 id="push-the-first-version-of-the-site:1ea8ed4e6ee92abf713dabb5b8f697e5">Push the first version of the site</h3>
+
+<p>You are now ready to create a PR with your changes.  When the PR is merged, Wercker should trigger a build and deploy automatically.</p>
+
+<ul>
+<li><code>git add .</code></li>
+<li><code>git commit -m &quot;Add theme to site&quot;</code></li>
+<li><code>git push</code></li>
+<li>Navigate to your fork on Github and create a PR.  See <a href="https://help.github.com/articles/using-pull-requests">https://help.github.com/articles/using-pull-requests</a>.  NOTE: The wercker pipeline will trigger when you create a PR, which is great because you know before you merge if you broke the build.  But in this first PR, the build will always fail because we haven&rsquo;t added a <code>wercker.yml</code>.
+<img src="https://3dsim.github.io/images/posts/Using-Hugo-and-Wercker-to-Create-and-Automate-Your-Own-Site/pr_small.png" alt="PR" />.<br /></li>
+<li>Merge in your changes (after reviewing with someone else of course).<br /></li>
+<li>Go to Wercker and see if your build is working.  If you see this at the end, you succeeded!
+<img src="https://3dsim.github.io/images/posts/Using-Hugo-and-Wercker-to-Create-and-Automate-Your-Own-Site/success_small.png" alt="Success" />.<br /></li>
+</ul>
+
+<h3 id="success:1ea8ed4e6ee92abf713dabb5b8f697e5">Success</h3>
+
+<ul>
+<li>Navigate to your new site at <code>http://&lt;your github username or organization&gt;.github.io/&lt;your site's repo name&gt;</code>, e.g. <a href="http://3dsim.github.io/corporate-site">http://3dsim.github.io/corporate-site</a></li>
+</ul>
+
+<p>It should like similar to this&hellip; (This screenshot was taken with only a couple changes to the <code>config.toml</code>.)
+<img src="https://3dsim.github.io/images/posts/Using-Hugo-and-Wercker-to-Create-and-Automate-Your-Own-Site/final_small.png" alt="Final view" />.</p>
+
+<p>If you made it this far, you now have a fully automated site or blog using Hugo and Wercker.  Go pat yourself on the back and get some coffee.</p>
+
+    </section>
+
+
+  <footer class="post-footer">
+
+    
+    <figure class="author-image">
+        <a class="img" href="https://3dsim.github.io/" style="background-image: url(https://s.gravatar.com/avatar/c9079ca00a3b670571d25f2e23023d0e?s=80)"><span class="hidden">'s Picture</span></a>
+    </figure>
+    
+
+    
+
+<section class="author">
+  <h4><a href="https://3dsim.github.io/">Ryan Walls</a></h4>
+  
+  <p>Software Engineering Manager at 3DSIM</p>
+  
+  <div class="author-meta">
+    <span class="author-location icon-location">Park City, UT</span>
+    <span class="author-link icon-link"><a href="https://twitter.com/ryanwalls">https://twitter.com/ryanwalls</a></span>
+  </div>
+</section>
+
+
+    
+
+
+
+
+<section class="share">
+  <h4>Share this post</h4>
+  
+  
+  <a class="icon-twitter" style="font-size: 1.4em" href="https://twitter.com/share?text=Using%20Hugo%20and%20Wercker%20to%20Create%20and%20Automate%20Your%20Own%20Site&amp;url=https%3a%2f%2f3dsim.github.io%2fusing-hugo-and-wercker-to-create-and-automate-your-own-site%2f"
+      onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+      <span class="hidden">Twitter</span>
+  </a>
+  
+ 
+  
+  <a class="icon-facebook" style="font-size: 1.4em" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2f3dsim.github.io%2fusing-hugo-and-wercker-to-create-and-automate-your-own-site%2f"
+      onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+      <span class="hidden">Facebook</span>
+  </a>
+  
+
+  
+  
+  
+  <a class="icon-google-plus" style="font-size: 1.4em" href="https://plus.google.com/share?url=https%3a%2f%2f3dsim.github.io%2fusing-hugo-and-wercker-to-create-and-automate-your-own-site%2f"
+     onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+      <span class="hidden">Google+</span>
+  </a>
+  
+</section>
+
+
+    
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = '3dsimengineeringblog';
+  var disqus_url = 'https:\/\/3dsim.github.io\/using-hugo-and-wercker-to-create-and-automate-your-own-site\/';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+
+  </footer>
+</article>
+
+</main>
+    <footer class="site-footer clearfix">
+        
+        <section class="copyright"><a href="">3DSIM Software Engineering</a> All rights reserved - 2016</section>
+        
+        
+        <section class="poweredby">Proudly generated by <a class="icon-hugo" href="http://gohugo.io">HUGO</a>, with <a class="icon-theme" href="https://github.com/dencold/hasper">Hasper</a> theme</section>
+        
+    </footer>
+    </div>
+    <script type="text/javascript" src="https://3dsim.github.io/js/jquery.js"></script>
+    <script type="text/javascript" src="https://3dsim.github.io/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="https://3dsim.github.io/js/index.js"></script>
+    
+</body>
+</html>
+

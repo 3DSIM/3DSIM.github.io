@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Conferences on 3DSIM Software Engineering</title>
+    <link>https://3dsim.github.io/tags/conferences/</link>
+    <description>Recent content in Conferences on 3DSIM Software Engineering</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>All rights reserved - 2016</copyright>
+    <lastBuildDate>Wed, 22 Jun 2016 10:03:36 -0600</lastBuildDate>
+    <atom:link href="https://3dsim.github.io/tags/conferences/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>DockerCon 2016 Highlights Day 2</title>
+      <link>https://3dsim.github.io/dockercon-2016-highlights-day-2/</link>
+      <pubDate>Wed, 22 Jun 2016 10:03:36 -0600</pubDate>
+      
+      <guid>https://3dsim.github.io/dockercon-2016-highlights-day-2/</guid>
+      <description>
+
+&lt;p&gt;Continuing from &lt;a href=&#34;https://3dsim.github.io/dockercon-2016-highlights-day-1/&#34;&gt;my post from yesterday&lt;/a&gt;&amp;hellip; Here are the Day 2 Notes and Highlights.&lt;/p&gt;
+
+&lt;h1 id=&#34;day-2:31845a37adb5af58320bff08e993d486&#34;&gt;Day 2&lt;/h1&gt;
+
+&lt;h2 id=&#34;keynote:31845a37adb5af58320bff08e993d486&#34;&gt;Keynote&lt;/h2&gt;
+
+&lt;p&gt;Keynote summary&amp;hellip;. monetizing docker.  (This is a good thing because that means new features funded will continue flowing down to the open source offerings.)&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Docker Data Center&lt;/li&gt;
+&lt;li&gt;Docker Trusted Registry&lt;/li&gt;
+&lt;li&gt;Docker Universal Control Plane&lt;/li&gt;
+&lt;li&gt;HP Datacenter Enterprise&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Demo&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Showed SQL Server running in a docker container on linux.  Interesting.&lt;/li&gt;
+&lt;li&gt;Debugging a .net app running in a container from VS Code&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;ADP CTO short talk&amp;hellip; he&amp;rsquo;s very nervous.  Highlight was when he compared microservices to chicken nuggets and monoliths to chickens.  You had to be there.&lt;/p&gt;
+
+&lt;h2 id=&#34;docker-for-ops-operationalize-your-docker-built-apps-in-production:31845a37adb5af58320bff08e993d486&#34;&gt;Docker for Ops: Operationalize your Docker Built Apps in Production&lt;/h2&gt;
+
+&lt;p&gt;Emphasis on Containers as a Service (CaaS) with a focus on agility, portability, and control.&lt;/p&gt;
+
+&lt;p&gt;Considerations for a production docker app&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Scale&lt;/li&gt;
+&lt;li&gt;Security&lt;/li&gt;
+&lt;li&gt;Monitoring&lt;/li&gt;
+&lt;li&gt;Ecosystem&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Docker Data Center handles security in a few different ways&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Provides fine grained access control&lt;/li&gt;
+&lt;li&gt;Integrated content trust.  Pushed images are signed by individuals.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Demo from Evan Hazlett.  (Evan originally wrote Shipyard, which was a Docker Container UI, deployment tool, etc.  Shipyard probably became Docker UCP if I had to guess.)&lt;/p&gt;
+
+&lt;p&gt;UCP&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Can create teams, labels, and permissions for each&lt;/li&gt;
+&lt;li&gt;Supports the new &amp;ldquo;services&amp;rdquo; feature in Docker 1.12&lt;/li&gt;
+&lt;li&gt;Declare state of the services and the cluster takes care of matching the state&lt;/li&gt;
+&lt;li&gt;Integrates with built in load balancing in Docker 1.12&lt;/li&gt;
+&lt;li&gt;Handles rolling deploys&lt;/li&gt;
+&lt;li&gt;Monitoring uses stats Docker API to aggregate data&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Summary&lt;/p&gt;
+
+&lt;p&gt;Basically they have created a full ecosystem management tool with a UI.  Looks nice, but it is rather expensive&amp;hellip; to the tune of $150/node/month.  Wayyyyy too expensive when you consider it doesn&amp;rsquo;t include the compute resources.&lt;/p&gt;
+
+&lt;h2 id=&#34;friendly-microservices:31845a37adb5af58320bff08e993d486&#34;&gt;Friendly Microservices&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Autogenerate documentation&lt;/li&gt;
+&lt;li&gt;Embed monitoring&lt;/li&gt;
+&lt;li&gt;Service should not go down&lt;/li&gt;
+&lt;li&gt;Make your service easy to deploy and scale&lt;/li&gt;
+&lt;li&gt;Consumers should be able to hit the API directly in a non-prod environment&lt;/li&gt;
+&lt;li&gt;Do not require a development environment to troubleshoot &amp;ndash; i.e.  use containers&lt;/li&gt;
+&lt;li&gt;One base url for everything
+
+&lt;ul&gt;
+&lt;li&gt;Use an api gateway, such as Zuul&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Don&amp;rsquo;t use wildcards and set correct domain in cookies&lt;/li&gt;
+&lt;li&gt;Always use HTTPS&lt;/li&gt;
+&lt;li&gt;Separate certs for api vs domain, so if one is compromised, the other still works.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;security-tips-from-twistlock:31845a37adb5af58320bff08e993d486&#34;&gt;Security tips from Twistlock&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Compliance policies, adjust per application&lt;/li&gt;
+&lt;li&gt;Monitor early in production&lt;/li&gt;
+&lt;li&gt;Use active threat control (identify unusual behavior)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;securing-the-container-pipeline:31845a37adb5af58320bff08e993d486&#34;&gt;Securing the Container Pipeline&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://3dsim.github.io/images/posts/DockerCon-2016-Highlights-Day-2/security1.jpg&#34; alt=&#34;Securing all the steps&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Threats&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Run-time
+
+&lt;ul&gt;
+&lt;li&gt;Container exploits&lt;/li&gt;
+&lt;li&gt;Breaking out of container&lt;/li&gt;
+&lt;li&gt;Cross container attacks&lt;/li&gt;
+&lt;li&gt;DDoS&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;At rest or during transport
+
+&lt;ul&gt;
+&lt;li&gt;Tampering of images&lt;/li&gt;
+&lt;li&gt;Unpatched OS or applications&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Mitigations&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Platform security&lt;/li&gt;
+&lt;li&gt;Monitoring and Response&lt;/li&gt;
+&lt;li&gt;Access Controls&lt;/li&gt;
+&lt;li&gt;Content Security&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Access Control&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;LDAP over SSL for Docker image transaction or use mutual TLS authentication for registry replication&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Container Integrity&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Use signed images&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Host hardening:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Frequent patching&lt;/li&gt;
+&lt;li&gt;Install only needed components and libraries&lt;/li&gt;
+&lt;li&gt;Grsecurity/PaX for the kernel&lt;/li&gt;
+&lt;li&gt;File system integrity monitoring&lt;/li&gt;
+&lt;li&gt;Leverage Linux isolation capabilities&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Container Hardening:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Base image and app with latest updates/patches&lt;/li&gt;
+&lt;li&gt;Leverage User namespaces (run as low privilege user on host)&lt;/li&gt;
+&lt;li&gt;Install only needed components and libraries (i.e. no gcc, bash, or ssh)&lt;/li&gt;
+&lt;li&gt;Avoid using Docker with &amp;ndash;privileged flag&lt;/li&gt;
+&lt;li&gt;Use &amp;ndash;read-only when running containers&lt;/li&gt;
+&lt;li&gt;Avoid providing access to the docker user and group&lt;/li&gt;
+&lt;li&gt;Limit and/or separate host and kernel device access&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Vulnerability management:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Image scans with tools, such as docker security scanning.&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;Operating system&lt;/li&gt;
+&lt;li&gt;Application source code and libraries&lt;/li&gt;
+&lt;li&gt;Network Scans with traditional vulnerability scanners.
+
+&lt;ul&gt;
+&lt;li&gt;Discovery&lt;/li&gt;
+&lt;li&gt;Exposed services&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Auto and manual source code edits.&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;Remediation - have prioritization and SLAs for patching&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Network Infrastructure&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Use an Intrusion Detection System (IDS)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Monitoring hosts:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;All host logs are saved&lt;/li&gt;
+&lt;li&gt;Use machine learning to analyze logs&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Monitoring containers and Apps&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Monitor all logs, similar to host&lt;/li&gt;
+&lt;li&gt;Network activity monitoring&lt;/li&gt;
+&lt;li&gt;Disk activity monitoring&lt;/li&gt;
+&lt;li&gt;Memory monitoring - docker and container process activity&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Digital Forensics&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Have incident response plan/policies in place&lt;/li&gt;
+&lt;li&gt;Memory, disk, network forensics&lt;/li&gt;
+&lt;li&gt;Build a super timeline of events using various tools like:
+
+&lt;ul&gt;
+&lt;li&gt;Sleuth Kit&lt;/li&gt;
+&lt;li&gt;Plaso&lt;/li&gt;
+&lt;li&gt;dd: Raw disk image&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Memory forensics&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Useful because everything runs in memory&lt;/li&gt;
+&lt;li&gt;Faster discovery vs disk forensics&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://3dsim.github.io/images/posts/DockerCon-2016-Highlights-Day-2/security-summary.jpg&#34; alt=&#34;Security Summary&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Conclusion&lt;/p&gt;
+
+&lt;p&gt;Lots of good information to incorporate.  Definitely could dedicate a full time position to this.&lt;/p&gt;
+
+&lt;h2 id=&#34;docker-networking-deep-dive:31845a37adb5af58320bff08e993d486&#34;&gt;Docker networking deep dive&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;libnetwork - not just a driver interface
+
+&lt;ul&gt;
+&lt;li&gt;handles all docker container networking&lt;/li&gt;
+&lt;li&gt;ip address management&lt;/li&gt;
+&lt;li&gt;multi-host networking&lt;/li&gt;
+&lt;li&gt;service discovery&lt;/li&gt;
+&lt;li&gt;load balancing&lt;/li&gt;
+&lt;li&gt;allows for extensions/plugins&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;New features in 1.12
+&lt;img src=&#34;https://3dsim.github.io/images/posts/DockerCon-2016-Highlights-Day-2/networking.jpg&#34; alt=&#34;New networking features&#34; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Cluster aware&lt;/li&gt;
+&lt;li&gt;De-centralized control plane&lt;/li&gt;
+&lt;li&gt;Highly scalable&lt;/li&gt;
+&lt;li&gt;Routing mesh&lt;/li&gt;
+&lt;li&gt;Load balancing&lt;/li&gt;
+&lt;li&gt;Service discovery&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Conclusion&lt;/p&gt;
+
+&lt;p&gt;Docker 1.12 is going to make a lot of engine-to-engine communication seamless.  I left early on this talk though because the deep dive was deeper than I needed.&lt;/p&gt;
+
+&lt;h2 id=&#34;project-tesson-demo:31845a37adb5af58320bff08e993d486&#34;&gt;Project Tesson Demo&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://3dsim.github.io/images/posts/DockerCon-2016-Highlights-Day-2/tesson.jpg&#34; alt=&#34;@kobolog&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://twitter.com/kobolog&#34;&gt;@kobolog&lt;/a&gt; shared his open source project called &amp;ldquo;Tesson&amp;rdquo; that maximizes resource usage by analyzing a machine&amp;rsquo;s hardware topology and handles spawning/pinning instances of a Go app to utilize all the hardware capability.  &lt;a href=&#34;https://github.com/kobolog/tesson&#34;&gt;https://github.com/kobolog/tesson&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Caught the tail end of this talk&amp;hellip; very impressive.  Will have to try it out on some of our CPU intensive Go apps.&lt;/p&gt;
+
+&lt;h2 id=&#34;summary:31845a37adb5af58320bff08e993d486&#34;&gt;Summary&lt;/h2&gt;
+
+&lt;p&gt;DockerCon was great.  Day 1 was the cool announcements.  Day 2 was the sales pitch&amp;hellip; at least for the keynote.  Both days were informative.  The conference was well organized.  Food was good.  Good set of speakers.  Great location.  And the weather was epic.&lt;/p&gt;
+
+&lt;p&gt;Overall, can&amp;rsquo;t complain&amp;hellip;. I got out mountain biking both days.  Highly recommend Duthie Hill and Tiger Mountain.  And if you need a bike rental check out &lt;a href=&#34;http://compassoutdooradventures.com&#34;&gt;http://compassoutdooradventures.com&lt;/a&gt;.  They deliver/pickup at both destinations.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://3dsim.github.io/images/posts/DockerCon-2016-Highlights-Day-2/mountain-biking.jpg&#34; alt=&#34;Mountain Biking at Tiger Mountain&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>DockerCon 2016 Highlights Day 1</title>
+      <link>https://3dsim.github.io/dockercon-2016-highlights-day-1/</link>
+      <pubDate>Tue, 21 Jun 2016 10:03:36 -0600</pubDate>
+      
+      <guid>https://3dsim.github.io/dockercon-2016-highlights-day-1/</guid>
+      <description>
+
+&lt;p&gt;At 3DSIM we believe in continuing education and investing in our developers.  We put that into practice in many ways and one of those ways is to encourage developers to attend a conference.  This year I&amp;rsquo;m attending DockerCon in Seattle.  Here are some running higlights&amp;hellip;&lt;/p&gt;
+
+&lt;h1 id=&#34;day-1:32d0795527c2abb0494e25ae7746bd71&#34;&gt;Day 1&lt;/h1&gt;
+
+&lt;h2 id=&#34;keynote-highlights:32d0795527c2abb0494e25ae7746bd71&#34;&gt;Keynote highlights&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://3dsim.github.io/images/posts/DockerCon-2016-Highlights-Day-1/dockercon-day1-keynote.jpg&#34; alt=&#34;Success&#34; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Docker for Mac allows you to debug code running in a container and live reload it.  (Need to figure out details)&lt;/li&gt;
+&lt;li&gt;Docker for Mac Beta is now open to anyone at &lt;a href=&#34;https://www.docker.com/products/docker#/mac&#34;&gt;https://www.docker.com/products/docker#/mac&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Docker 1.12 will have orchestration features built-in.  &lt;a href=&#34;https://blog.docker.com/2016/06/docker-1-12-built-in-orchestration/&#34;&gt;https://blog.docker.com/2016/06/docker-1-12-built-in-orchestration/&lt;/a&gt;&lt;br /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Swarm mode.  Self forming, self-healing.  No external data store required (e.g. Consul or etcd)&lt;/li&gt;
+&lt;li&gt;Secure node to node communication.&lt;/li&gt;
+&lt;li&gt;There is now a docker service API that handles scaling, rolling updates, scheduling, application specific health checks, rescheduling on node failure.  This look amazing&amp;hellip;&lt;/li&gt;
+&lt;li&gt;Built in routing.  Load balancing, DNS based service discovery, no separate cluster to setup.&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Example commands with new built-in orchestration:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;docker service create --name vote -p 8080:80 instavote/vote
+docker service ls
+docker service tasks vote
+docker service scale vote=6
+docker service update vote --image instavote/vote:movies
+docker service update vote --image instavote/vote:indent --update-parallelism 2 --update-delay 10s
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Docker for AWS and Docker for Azure.  (Interesting.)&lt;br /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&amp;ldquo;Seamless&amp;rdquo; (Not sure we will give up Ansible for deploying&amp;hellip;)&lt;/li&gt;
+&lt;li&gt;Will have to find more links to details&amp;hellip; sounds like specialized cloudformation templates.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;(Experimental) Distributed Application Bundle (DAB)&amp;hellip; a format for multi-container applications.&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;talk-highlights-the-golden-ticket-docker-and-high-security-microservices:32d0795527c2abb0494e25ae7746bd71&#34;&gt;Talk Highlights: &amp;ldquo;The Golden Ticket: Docker and High Security Microservices&amp;rdquo;&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://dockercon2016.sched.org/event/70Ni&#34;&gt;http://dockercon2016.sched.org/event/70Ni&lt;/a&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Use TLS&lt;/li&gt;
+&lt;li&gt;Least trust/Least access&lt;/li&gt;
+&lt;li&gt;Security starts with the base OS - does the base OS manage security in a &amp;ldquo;good&amp;rdquo; way?  Start with a &amp;ldquo;minimal&amp;rdquo; base&lt;/li&gt;
+&lt;li&gt;Minimal kernel&lt;/li&gt;
+&lt;li&gt;Should also have minimal containers.  Larger containers = more patching, disk space, attack surface and post exploitation utilities.&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;He&amp;rsquo;s a fan of Go&amp;hellip; only put a single binary in the Docker container.  (Shot out to Richard Bolt who gave a talk on this at our last SLC Docker meetup.)&lt;/li&gt;
+&lt;li&gt;Use Mandatory Access Control (MAC) - which is enabled by default in Docker.
+
+&lt;ul&gt;
+&lt;li&gt;Use aa-genprof to generate an apparmor profile, or use Bane&lt;/li&gt;
+&lt;li&gt;Profile generators are not perfect, keep an eye after switching to &amp;ldquo;mandatory&amp;rdquo; mode&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;Default seccomp filter permits 304 calls.&lt;/li&gt;
+&lt;li&gt;Can use sysdig to figure out what calls are open on the system (requires kernel module)&lt;/li&gt;
+&lt;li&gt;Pitfalls of seccomp:&lt;/li&gt;
+&lt;li&gt;Fragile&lt;/li&gt;
+&lt;li&gt;Libseccomp - go library&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;High security docker microservices&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Enable user namespace&lt;/li&gt;
+&lt;li&gt;Use specific apparmor if possible&lt;/li&gt;
+&lt;li&gt;Seccomp whitelist&lt;/li&gt;
+&lt;li&gt;harden host system&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Handling secrets&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Avoid environment variables and flat files&lt;/li&gt;
+&lt;li&gt;Use something like Vault &lt;a href=&#34;https://github.com/hashicorp/vault&#34;&gt;https://github.com/hashicorp/vault&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Networking&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Use TLS.  All network traffic should be encrypted and authenticated.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Security in general&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Develop threat models for each application&lt;/li&gt;
+&lt;li&gt;Log everything and all access.  Keep logs centrally.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;docker-for-developers-1-and-2:32d0795527c2abb0494e25ae7746bd71&#34;&gt;Docker for Developers 1 and 2&lt;/h2&gt;
+
+&lt;p&gt;Various demos of how native Docker for Mac/Windows and Docker Cloud make development easier.  Both show promise.&lt;/p&gt;
+
+&lt;p&gt;Docker Cloud demos involved too much clicking and UI work&amp;hellip; will have to investigate what APIs are available.&lt;/p&gt;
+
+&lt;p&gt;Installed Docker for Mac yesterday and so far so good.&lt;/p&gt;
+
+&lt;h2 id=&#34;immutable-infrastructure:32d0795527c2abb0494e25ae7746bd71&#34;&gt;Immutable Infrastructure&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Limit number of dependencies and libraries in projects&lt;/li&gt;
+&lt;li&gt;Shorten lead time&lt;/li&gt;
+&lt;li&gt;High performing organizations:
+
+&lt;ul&gt;
+&lt;li&gt;Deploy more often&lt;/li&gt;
+&lt;li&gt;Lead time is short&lt;/li&gt;
+&lt;li&gt;High change success rate&lt;/li&gt;
+&lt;li&gt;Low MTTR&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Overall, entertaining talk without a lot of &amp;ldquo;new&amp;rdquo; content.&lt;/p&gt;
+
+&lt;h2 id=&#34;summary:32d0795527c2abb0494e25ae7746bd71&#34;&gt;Summary&lt;/h2&gt;
+
+&lt;p&gt;Good first day.  Highlight for me is Docker 1.12 orchestration features&amp;hellip; will be using those in our pipelines as soon as they become available.&lt;/p&gt;
+
+&lt;p&gt;See my day 2 notes here: &lt;a href=&#34;https://3dsim.github.io/dockercon-2016-highlights-day-2/&#34;&gt;DockerCon 2016 Highlights Day 2&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

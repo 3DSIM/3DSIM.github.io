@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+      <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  	<meta property="og:title" content=" DockerCon 2016 Highlights Day 2 &middot;  3DSIM Software Engineering" />
+  	<meta property="og:site_name" content="3DSIM Software Engineering" />
+  	<meta property="og:url" content="https://3dsim.github.io/dockercon-2016-highlights-day-2/" />
+
+    
+  	<meta property="og:type" content="article" />
+
+    <meta property="og:article:published_time" content="2016-06-22T10:03:36-06:00" />
+
+    
+    <meta property="og:article:tag" content="conferences" />
+    
+    <meta property="og:article:tag" content="docker" />
+    
+    
+
+    <meta name="description" content="Changing the simulation world from a little ski town." />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+
+
+  <title>
+     DockerCon 2016 Highlights Day 2 &middot;  3DSIM Software Engineering
+  </title>
+      <link rel="shortcut icon" href="https://3dsim.github.io/images/favicon.ico">
+	  <link rel="apple-touch-icon" href="https://3dsim.github.io/images/apple-touch-icon.png" />
+
+    <link rel="stylesheet" type="text/css" href="https://3dsim.github.io/css/screen.css" />
+    <link rel="stylesheet" type="text/css" href="https://3dsim.github.io/css/nav.css" />
+    <link rel="stylesheet" type="text/css" 
+          href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400|Inconsolata"
+    />
+
+    
+      
+          <link href="https://3dsim.github.io/index.xml" rel="alternate" 
+                type="application/rss+xml" title="3DSIM Software Engineering" 
+          />
+      
+      
+    
+    <meta name="generator" content="Hugo 0.15" />
+
+    <link rel="canonical" href="https://3dsim.github.io/dockercon-2016-highlights-day-2/" />
+
+    
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-83905346-2', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+    
+
+    
+    <link rel="stylesheet" href="https://3dsim.github.io/css/highlightjs/tomorrow-night-eighties.css">
+    <script src="https://3dsim.github.io/js/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+
+
+</head>
+<body class="nav-closed">
+
+  <div class="nav">
+    <h3 class="nav-title">Menu</h3>
+    <a href="#" class="nav-close">
+        <span class="hidden">Close</span>
+    </a>
+    <ul>
+        
+        
+        
+            
+            <li class="nav-opened" role="presentation">
+            	<a href="https://3dsim.github.io/">Engineering Blog</a>
+            </li>
+        
+            
+            <li class="nav-opened" role="presentation">
+            	<a href="http://3dsim.com">Main Company Site</a>
+            </li>
+        
+            
+            <li class="nav-opened" role="presentation">
+            	<a href="mailto:support@3dsim.com">Contact us</a>
+            </li>
+        
+    </ul>
+    
+    
+    <a class="subscribe-button icon-feed" href="https://3dsim.github.io/index.xml">Subscribe</a>
+    
+</div>
+<span class="nav-cover"></span>
+
+
+ <div class="site-wrapper">
+
+
+
+    
+
+
+  <header class="main-header post-head" style="background-image: url(/images/cover_small.jpg)">
+
+
+      <nav class="main-nav overlay clearfix">
+        
+            <a class="blog-logo" href="https://3dsim.github.io/"><img src="https://3dsim.github.io/images/3DSIMLogoOnly.png" alt="Blog Logo" /></a>
+        
+        
+            <a class="menu-button" href="#"><span class="burger">&#9776;</span><span class="word">Menu</span></a>
+        
+    </nav>
+ 
+
+   <div class="vertical">
+        <div class="main-header-content inner">
+          
+        </div>
+    </div>
+</header>
+
+
+
+
+<main class="content" role="main">
+
+  <article class="post post">
+
+    <header class="post-header">
+        <h1 class="post-title">DockerCon 2016 Highlights Day 2</h1>
+        <small></small>
+
+        
+
+
+
+
+
+<section class="post-meta">
+  
+    
+      <img class="author-thumb" src="https://s.gravatar.com/avatar/c9079ca00a3b670571d25f2e23023d0e?s=80" alt="Author image" nopin="nopin" />
+    
+  
+
+  
+  ryanwalls
+
+  <time class="post-date" datetime="2016-06-22T10:03:36-06:00">
+    22 Jun 2016
+  </time>
+  <div class="post-tag">
+  
+    
+    
+        <a href="https://3dsim.github.io/tags/conferences/">#conferences</a>
+    
+        <a href="https://3dsim.github.io/tags/docker/">#docker</a>
+    
+  
+  </div>
+  
+</section>
+
+    </header>
+
+    <section class="post-content">
+      
+
+<p>Continuing from <a href="https://3dsim.github.io/dockercon-2016-highlights-day-1/">my post from yesterday</a>&hellip; Here are the Day 2 Notes and Highlights.</p>
+
+<h1 id="day-2:31845a37adb5af58320bff08e993d486">Day 2</h1>
+
+<h2 id="keynote:31845a37adb5af58320bff08e993d486">Keynote</h2>
+
+<p>Keynote summary&hellip;. monetizing docker.  (This is a good thing because that means new features funded will continue flowing down to the open source offerings.)</p>
+
+<ul>
+<li>Docker Data Center</li>
+<li>Docker Trusted Registry</li>
+<li>Docker Universal Control Plane</li>
+<li>HP Datacenter Enterprise</li>
+</ul>
+
+<p>Demo</p>
+
+<ul>
+<li>Showed SQL Server running in a docker container on linux.  Interesting.</li>
+<li>Debugging a .net app running in a container from VS Code</li>
+</ul>
+
+<p>ADP CTO short talk&hellip; he&rsquo;s very nervous.  Highlight was when he compared microservices to chicken nuggets and monoliths to chickens.  You had to be there.</p>
+
+<h2 id="docker-for-ops-operationalize-your-docker-built-apps-in-production:31845a37adb5af58320bff08e993d486">Docker for Ops: Operationalize your Docker Built Apps in Production</h2>
+
+<p>Emphasis on Containers as a Service (CaaS) with a focus on agility, portability, and control.</p>
+
+<p>Considerations for a production docker app</p>
+
+<ul>
+<li>Scale</li>
+<li>Security</li>
+<li>Monitoring</li>
+<li>Ecosystem</li>
+</ul>
+
+<p>Docker Data Center handles security in a few different ways</p>
+
+<ul>
+<li>Provides fine grained access control</li>
+<li>Integrated content trust.  Pushed images are signed by individuals.</li>
+</ul>
+
+<p>Demo from Evan Hazlett.  (Evan originally wrote Shipyard, which was a Docker Container UI, deployment tool, etc.  Shipyard probably became Docker UCP if I had to guess.)</p>
+
+<p>UCP</p>
+
+<ul>
+<li>Can create teams, labels, and permissions for each</li>
+<li>Supports the new &ldquo;services&rdquo; feature in Docker 1.12</li>
+<li>Declare state of the services and the cluster takes care of matching the state</li>
+<li>Integrates with built in load balancing in Docker 1.12</li>
+<li>Handles rolling deploys</li>
+<li>Monitoring uses stats Docker API to aggregate data</li>
+</ul>
+
+<p>Summary</p>
+
+<p>Basically they have created a full ecosystem management tool with a UI.  Looks nice, but it is rather expensive&hellip; to the tune of $150/node/month.  Wayyyyy too expensive when you consider it doesn&rsquo;t include the compute resources.</p>
+
+<h2 id="friendly-microservices:31845a37adb5af58320bff08e993d486">Friendly Microservices</h2>
+
+<ul>
+<li>Autogenerate documentation</li>
+<li>Embed monitoring</li>
+<li>Service should not go down</li>
+<li>Make your service easy to deploy and scale</li>
+<li>Consumers should be able to hit the API directly in a non-prod environment</li>
+<li>Do not require a development environment to troubleshoot &ndash; i.e.  use containers</li>
+<li>One base url for everything
+
+<ul>
+<li>Use an api gateway, such as Zuul</li>
+</ul></li>
+<li>Don&rsquo;t use wildcards and set correct domain in cookies</li>
+<li>Always use HTTPS</li>
+<li>Separate certs for api vs domain, so if one is compromised, the other still works.</li>
+</ul>
+
+<h2 id="security-tips-from-twistlock:31845a37adb5af58320bff08e993d486">Security tips from Twistlock</h2>
+
+<ul>
+<li>Compliance policies, adjust per application</li>
+<li>Monitor early in production</li>
+<li>Use active threat control (identify unusual behavior)</li>
+</ul>
+
+<h2 id="securing-the-container-pipeline:31845a37adb5af58320bff08e993d486">Securing the Container Pipeline</h2>
+
+<p><img src="https://3dsim.github.io/images/posts/DockerCon-2016-Highlights-Day-2/security1.jpg" alt="Securing all the steps" /></p>
+
+<p>Threats</p>
+
+<ul>
+<li>Run-time
+
+<ul>
+<li>Container exploits</li>
+<li>Breaking out of container</li>
+<li>Cross container attacks</li>
+<li>DDoS</li>
+</ul></li>
+<li>At rest or during transport
+
+<ul>
+<li>Tampering of images</li>
+<li>Unpatched OS or applications</li>
+</ul></li>
+</ul>
+
+<p>Mitigations</p>
+
+<ul>
+<li>Platform security</li>
+<li>Monitoring and Response</li>
+<li>Access Controls</li>
+<li>Content Security</li>
+</ul>
+
+<p>Access Control</p>
+
+<ul>
+<li>LDAP over SSL for Docker image transaction or use mutual TLS authentication for registry replication</li>
+</ul>
+
+<p>Container Integrity</p>
+
+<ul>
+<li>Use signed images</li>
+</ul>
+
+<p>Host hardening:</p>
+
+<ul>
+<li>Frequent patching</li>
+<li>Install only needed components and libraries</li>
+<li>Grsecurity/PaX for the kernel</li>
+<li>File system integrity monitoring</li>
+<li>Leverage Linux isolation capabilities</li>
+</ul>
+
+<p>Container Hardening:</p>
+
+<ul>
+<li>Base image and app with latest updates/patches</li>
+<li>Leverage User namespaces (run as low privilege user on host)</li>
+<li>Install only needed components and libraries (i.e. no gcc, bash, or ssh)</li>
+<li>Avoid using Docker with &ndash;privileged flag</li>
+<li>Use &ndash;read-only when running containers</li>
+<li>Avoid providing access to the docker user and group</li>
+<li>Limit and/or separate host and kernel device access</li>
+</ul>
+
+<p>Vulnerability management:</p>
+
+<ul>
+<li>Image scans with tools, such as docker security scanning.<br /></li>
+<li>Operating system</li>
+<li>Application source code and libraries</li>
+<li>Network Scans with traditional vulnerability scanners.
+
+<ul>
+<li>Discovery</li>
+<li>Exposed services</li>
+</ul></li>
+<li>Auto and manual source code edits.<br /></li>
+<li>Remediation - have prioritization and SLAs for patching</li>
+</ul>
+
+<p>Network Infrastructure</p>
+
+<ul>
+<li>Use an Intrusion Detection System (IDS)</li>
+</ul>
+
+<p>Monitoring hosts:</p>
+
+<ul>
+<li>All host logs are saved</li>
+<li>Use machine learning to analyze logs</li>
+</ul>
+
+<p>Monitoring containers and Apps</p>
+
+<ul>
+<li>Monitor all logs, similar to host</li>
+<li>Network activity monitoring</li>
+<li>Disk activity monitoring</li>
+<li>Memory monitoring - docker and container process activity</li>
+</ul>
+
+<p>Digital Forensics</p>
+
+<ul>
+<li>Have incident response plan/policies in place</li>
+<li>Memory, disk, network forensics</li>
+<li>Build a super timeline of events using various tools like:
+
+<ul>
+<li>Sleuth Kit</li>
+<li>Plaso</li>
+<li>dd: Raw disk image</li>
+</ul></li>
+</ul>
+
+<p>Memory forensics</p>
+
+<ul>
+<li>Useful because everything runs in memory</li>
+<li>Faster discovery vs disk forensics</li>
+</ul>
+
+<p><img src="https://3dsim.github.io/images/posts/DockerCon-2016-Highlights-Day-2/security-summary.jpg" alt="Security Summary" /></p>
+
+<p>Conclusion</p>
+
+<p>Lots of good information to incorporate.  Definitely could dedicate a full time position to this.</p>
+
+<h2 id="docker-networking-deep-dive:31845a37adb5af58320bff08e993d486">Docker networking deep dive</h2>
+
+<ul>
+<li>libnetwork - not just a driver interface
+
+<ul>
+<li>handles all docker container networking</li>
+<li>ip address management</li>
+<li>multi-host networking</li>
+<li>service discovery</li>
+<li>load balancing</li>
+<li>allows for extensions/plugins</li>
+</ul></li>
+</ul>
+
+<p>New features in 1.12
+<img src="https://3dsim.github.io/images/posts/DockerCon-2016-Highlights-Day-2/networking.jpg" alt="New networking features" /></p>
+
+<ul>
+<li>Cluster aware</li>
+<li>De-centralized control plane</li>
+<li>Highly scalable</li>
+<li>Routing mesh</li>
+<li>Load balancing</li>
+<li>Service discovery</li>
+</ul>
+
+<p>Conclusion</p>
+
+<p>Docker 1.12 is going to make a lot of engine-to-engine communication seamless.  I left early on this talk though because the deep dive was deeper than I needed.</p>
+
+<h2 id="project-tesson-demo:31845a37adb5af58320bff08e993d486">Project Tesson Demo</h2>
+
+<p><img src="https://3dsim.github.io/images/posts/DockerCon-2016-Highlights-Day-2/tesson.jpg" alt="@kobolog" /></p>
+
+<p><a href="https://twitter.com/kobolog">@kobolog</a> shared his open source project called &ldquo;Tesson&rdquo; that maximizes resource usage by analyzing a machine&rsquo;s hardware topology and handles spawning/pinning instances of a Go app to utilize all the hardware capability.  <a href="https://github.com/kobolog/tesson">https://github.com/kobolog/tesson</a></p>
+
+<p>Caught the tail end of this talk&hellip; very impressive.  Will have to try it out on some of our CPU intensive Go apps.</p>
+
+<h2 id="summary:31845a37adb5af58320bff08e993d486">Summary</h2>
+
+<p>DockerCon was great.  Day 1 was the cool announcements.  Day 2 was the sales pitch&hellip; at least for the keynote.  Both days were informative.  The conference was well organized.  Food was good.  Good set of speakers.  Great location.  And the weather was epic.</p>
+
+<p>Overall, can&rsquo;t complain&hellip;. I got out mountain biking both days.  Highly recommend Duthie Hill and Tiger Mountain.  And if you need a bike rental check out <a href="http://compassoutdooradventures.com">http://compassoutdooradventures.com</a>.  They deliver/pickup at both destinations.</p>
+
+<p><img src="https://3dsim.github.io/images/posts/DockerCon-2016-Highlights-Day-2/mountain-biking.jpg" alt="Mountain Biking at Tiger Mountain" /></p>
+
+    </section>
+
+
+  <footer class="post-footer">
+
+    
+    <figure class="author-image">
+        <a class="img" href="https://3dsim.github.io/" style="background-image: url(https://s.gravatar.com/avatar/c9079ca00a3b670571d25f2e23023d0e?s=80)"><span class="hidden">'s Picture</span></a>
+    </figure>
+    
+
+    
+
+<section class="author">
+  <h4><a href="https://3dsim.github.io/">Ryan Walls</a></h4>
+  
+  <p>Software Engineering Manager at 3DSIM</p>
+  
+  <div class="author-meta">
+    <span class="author-location icon-location">Park City, UT</span>
+    <span class="author-link icon-link"><a href="https://twitter.com/ryanwalls">https://twitter.com/ryanwalls</a></span>
+  </div>
+</section>
+
+
+    
+
+
+
+
+<section class="share">
+  <h4>Share this post</h4>
+  
+  
+  <a class="icon-twitter" style="font-size: 1.4em" href="https://twitter.com/share?text=DockerCon%202016%20Highlights%20Day%202&amp;url=https%3a%2f%2f3dsim.github.io%2fdockercon-2016-highlights-day-2%2f"
+      onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+      <span class="hidden">Twitter</span>
+  </a>
+  
+ 
+  
+  <a class="icon-facebook" style="font-size: 1.4em" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2f3dsim.github.io%2fdockercon-2016-highlights-day-2%2f"
+      onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+      <span class="hidden">Facebook</span>
+  </a>
+  
+
+  
+  
+  
+  <a class="icon-google-plus" style="font-size: 1.4em" href="https://plus.google.com/share?url=https%3a%2f%2f3dsim.github.io%2fdockercon-2016-highlights-day-2%2f"
+     onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+      <span class="hidden">Google+</span>
+  </a>
+  
+</section>
+
+
+    
+
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+  var disqus_shortname = '3dsimengineeringblog';
+  var disqus_url = 'https:\/\/3dsim.github.io\/dockercon-2016-highlights-day-2\/';
+  (function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+  })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+
+
+
+  </footer>
+</article>
+
+</main>
+    <footer class="site-footer clearfix">
+        
+        <section class="copyright"><a href="">3DSIM Software Engineering</a> All rights reserved - 2016</section>
+        
+        
+        <section class="poweredby">Proudly generated by <a class="icon-hugo" href="http://gohugo.io">HUGO</a>, with <a class="icon-theme" href="https://github.com/dencold/hasper">Hasper</a> theme</section>
+        
+    </footer>
+    </div>
+    <script type="text/javascript" src="https://3dsim.github.io/js/jquery.js"></script>
+    <script type="text/javascript" src="https://3dsim.github.io/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="https://3dsim.github.io/js/index.js"></script>
+    
+</body>
+</html>
+

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Jenkins on 3DSIM Software Engineering</title>
+    <link>https://3dsim.github.io/tags/jenkins/</link>
+    <description>Recent content in Jenkins on 3DSIM Software Engineering</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>All rights reserved - 2016</copyright>
+    <lastBuildDate>Thu, 29 Sep 2016 06:16:24 -0600</lastBuildDate>
+    <atom:link href="https://3dsim.github.io/tags/jenkins/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Securing Jenkins with Auth0</title>
+      <link>https://3dsim.github.io/securing-jenkins-with-auth0/</link>
+      <pubDate>Thu, 29 Sep 2016 06:16:24 -0600</pubDate>
+      
+      <guid>https://3dsim.github.io/securing-jenkins-with-auth0/</guid>
+      <description>
+
+&lt;p&gt;&lt;img src=&#34;https://3dsim.github.io/images/posts/Securing-Jenkins-with-Auth0/jenkins.png&#34; alt=&#34;Jenkins&#34; /&gt;
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Securing-Jenkins-with-Auth0/auth0.png&#34; alt=&#34;Auth0&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We recently (yesterday) switched our Jenkins authentication from the Github authentication plugin to Auth0.  We had a few reasons for this&amp;hellip;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;We wanted more fine grained control over permissions&lt;/li&gt;
+&lt;li&gt;We didn&amp;rsquo;t want everyone with Github access to have Jenkins access&lt;/li&gt;
+&lt;li&gt;We eventually want single sign-on with other 3DSIM applications&lt;/li&gt;
+&lt;li&gt;We were already using Auth0 for other things&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Bottom line.  We switched.  The process had some minor quirks, so figured I&amp;rsquo;d write a guide for my future self to follow next time I have to set this up&amp;hellip;&lt;/p&gt;
+
+&lt;h2 id=&#34;configure-auth0:fbd9d0e77cb5c8a95f7dee502da3a88c&#34;&gt;Configure Auth0&lt;/h2&gt;
+
+&lt;p&gt;Credit goes to &lt;a href=&#34;http://stackoverflow.com/questions/33789104/jenkins-integration-with-auth0&#34;&gt;this question&lt;/a&gt; on stackoverflow for getting me headed in the right direction.  Here are the steps I took:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Before starting, make sure you have at least one user configured in Auth0.&lt;br /&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Create a new client in Auth0 named &amp;ldquo;Jenkins&amp;rdquo;.  (I chose &amp;ldquo;regular web app&amp;rdquo; for the type, but it doesn&amp;rsquo;t really matter.)
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Securing-Jenkins-with-Auth0/auth0-create-client.png&#34; alt=&#34;Create client&#34; /&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;After creating the client, scroll down on the settings tab to the &amp;ldquo;Allowed Callback URLs section&amp;rdquo; and add a callback in this form: &lt;code&gt;&amp;lt;your jenkins url&amp;gt;/securityRealm/finishLogin&lt;/code&gt;
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Securing-Jenkins-with-Auth0/allowed-callback-urls.png&#34; alt=&#34;Add callback url&#34; /&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Scroll all the way down in settings tab and click on &amp;ldquo;Show Advanced Settings&amp;rdquo;, then select the &amp;ldquo;Endpoints&amp;rdquo; tab
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Securing-Jenkins-with-Auth0/saml-metadata-url.png&#34; alt=&#34;SAML Metadata URL&#34; /&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Copy the &amp;ldquo;SAML Metadata URL&amp;rdquo; and open a new browser window, paste it, and hit enter.  An XML file should be downloaded.  Save it for when we configure Jenkins.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Scroll back to the top of the client configuration page and select the &amp;ldquo;Addons&amp;rdquo; tab.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Turn on the &amp;ldquo;SAML2 Web App&amp;rdquo; addon.
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Securing-Jenkins-with-Auth0/addons.png&#34; alt=&#34;Addons&#34; /&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;In the configuration box for the addon, make sure and set the &lt;code&gt;recipient&lt;/code&gt; and &lt;code&gt;audience&lt;/code&gt; fields to your Jenkins callback URL.
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Securing-Jenkins-with-Auth0/saml-config.png&#34; alt=&#34;SAML Config&#34; /&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;After saving (bottom of the page), click on the &amp;ldquo;Debug&amp;rdquo; button.  You will be asked to login.  Login using one of your test user accounts.  If the configuration is successful you should see a page that looks like this:
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Securing-Jenkins-with-Auth0/success.png&#34; alt=&#34;Success&#34; /&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;configure-jenkins:fbd9d0e77cb5c8a95f7dee502da3a88c&#34;&gt;Configure Jenkins&lt;/h2&gt;
+
+&lt;h3 id=&#34;jenkins-plugins:fbd9d0e77cb5c8a95f7dee502da3a88c&#34;&gt;Jenkins Plugins&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Install the SAML Plugin: &lt;a href=&#34;https://wiki.jenkins-ci.org/display/JENKINS/SAML+Plugin&#34;&gt;https://wiki.jenkins-ci.org/display/JENKINS/SAML+Plugin&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Install the Role Strategy Plugin: &lt;a href=&#34;https://wiki.jenkins-ci.org/display/JENKINS/Role+Strategy+Plugin&#34;&gt;https://wiki.jenkins-ci.org/display/JENKINS/Role+Strategy+Plugin&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;configure-jenkins-global-security:fbd9d0e77cb5c8a95f7dee502da3a88c&#34;&gt;Configure Jenkins global security&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Go to &amp;ldquo;Manage Jenkins&amp;rdquo; -&amp;gt; &amp;ldquo;Configure Global Security&amp;rdquo;
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Securing-Jenkins-with-Auth0/configure-global-security.png&#34; alt=&#34;Configure global security&#34; /&gt;&lt;/li&gt;
+&lt;li&gt;Check the &amp;ldquo;Enable security&amp;rdquo; checkbox&lt;/li&gt;
+&lt;li&gt;Select &amp;ldquo;SAML 2.0&amp;rdquo; radio button&lt;/li&gt;
+&lt;li&gt;Paste XML from the Auth0 metadata URL downloaded previously into the &amp;ldquo;IdP Metadata&amp;rdquo; field&lt;/li&gt;
+&lt;li&gt;(Optional) Add the field you want to use for the username.  We are using &amp;ldquo;&lt;a href=&#34;http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress&amp;quot;&#34;&gt;http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress&amp;quot;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Under &amp;ldquo;Authorization&amp;rdquo;, choose &amp;ldquo;Role-Based Strategy&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;Click &amp;ldquo;Save&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;manage-and-assign-roles-for-jenkins-auth0-interaction:fbd9d0e77cb5c8a95f7dee502da3a88c&#34;&gt;Manage and Assign Roles for Jenkins/Auth0 interaction&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Go to &amp;ldquo;Manage Jenkins&amp;rdquo; -&amp;gt; &amp;ldquo;Manage and Assign Roles&amp;rdquo; -&amp;gt; &amp;ldquo;Manage Roles&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;Add any roles that makes sense for your use case and assign them permissions.  In our case we added an &amp;ldquo;admin&amp;rdquo; and
+&amp;ldquo;authenticated&amp;rdquo; role.  (Note that roles are different from groups.  In the default setup, anyone who logs in via Auth0 will be assigned to an &amp;ldquo;authenticated&amp;rdquo; &lt;strong&gt;group&lt;/strong&gt;.  If you want to use more specialized groups in Auth0, you&amp;rsquo;ll need to add the Auth0 Authorization Extension.  See &lt;a href=&#34;https://auth0.com/docs/extensions/authorization-extension.&#34;&gt;https://auth0.com/docs/extensions/authorization-extension.&lt;/a&gt;)&lt;/li&gt;
+&lt;li&gt;To match a role to an Auth0 group (remember they are different), navigate to &amp;ldquo;Manage Jenkins&amp;rdquo; -&amp;gt; &amp;ldquo;Manage and Assign Roles&amp;rdquo; -&amp;gt; &amp;ldquo;Assign Roles&amp;rdquo;
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Securing-Jenkins-with-Auth0/assign-roles.png&#34; alt=&#34;Assign Roles&#34; /&gt;&lt;/li&gt;
+&lt;li&gt;Here you can associate Auth0 groups/users (left column) with roles (columns 2+) by clicking checkboxes.&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;We added the &lt;code&gt;authenticated&lt;/code&gt; group to the &lt;code&gt;authenticated&lt;/code&gt; role we setup previously.&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;To keep non-authenticated users from seeing any of Jenkins, we unchecked all privileges for the &lt;code&gt;Anonymous&lt;/code&gt; group.&lt;/li&gt;
+&lt;li&gt;Save&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;wrapping-up:fbd9d0e77cb5c8a95f7dee502da3a88c&#34;&gt;Wrapping up&lt;/h2&gt;
+
+&lt;p&gt;That&amp;rsquo;s it!  Try it out.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Open an incognito window and navigate to your jenkins URL.&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;You should be presented with an Auth0 login like this:
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Securing-Jenkins-with-Auth0/auth0-login.png&#34; alt=&#34;Auth0 login&#34; /&gt;&lt;/li&gt;
+&lt;li&gt;Once you login, your email address should show up in the top right corner of your Jenkins dashboard.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Congratulations.  You now can use Auth0 to access Jenkins.  Bonus points: setup SSO with your corporate LDAP, AD, Salesforce, or other identity provider.&lt;/p&gt;
+
+&lt;p&gt;Leave a comment below if you have questions or have any suggestions for improving this tutorial.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

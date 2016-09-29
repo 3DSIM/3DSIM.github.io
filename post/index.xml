@@ -1,0 +1,687 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Post on 3DSIM Software Engineering</title>
+    <link>https://3dsim.github.io/post/</link>
+    <description>Recent content in Post on 3DSIM Software Engineering</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>All rights reserved - 2016</copyright>
+    <lastBuildDate>Thu, 29 Sep 2016 06:16:24 -0600</lastBuildDate>
+    <atom:link href="https://3dsim.github.io/post/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Securing Jenkins with Auth0</title>
+      <link>https://3dsim.github.io/securing-jenkins-with-auth0/</link>
+      <pubDate>Thu, 29 Sep 2016 06:16:24 -0600</pubDate>
+      
+      <guid>https://3dsim.github.io/securing-jenkins-with-auth0/</guid>
+      <description>
+
+&lt;p&gt;&lt;img src=&#34;https://3dsim.github.io/images/posts/Securing-Jenkins-with-Auth0/jenkins.png&#34; alt=&#34;Jenkins&#34; /&gt;
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Securing-Jenkins-with-Auth0/auth0.png&#34; alt=&#34;Auth0&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We recently (yesterday) switched our Jenkins authentication from the Github authentication plugin to Auth0.  We had a few reasons for this&amp;hellip;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;We wanted more fine grained control over permissions&lt;/li&gt;
+&lt;li&gt;We didn&amp;rsquo;t want everyone with Github access to have Jenkins access&lt;/li&gt;
+&lt;li&gt;We eventually want single sign-on with other 3DSIM applications&lt;/li&gt;
+&lt;li&gt;We were already using Auth0 for other things&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Bottom line.  We switched.  The process had some minor quirks, so figured I&amp;rsquo;d write a guide for my future self to follow next time I have to set this up&amp;hellip;&lt;/p&gt;
+
+&lt;h2 id=&#34;configure-auth0:fbd9d0e77cb5c8a95f7dee502da3a88c&#34;&gt;Configure Auth0&lt;/h2&gt;
+
+&lt;p&gt;Credit goes to &lt;a href=&#34;http://stackoverflow.com/questions/33789104/jenkins-integration-with-auth0&#34;&gt;this question&lt;/a&gt; on stackoverflow for getting me headed in the right direction.  Here are the steps I took:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Before starting, make sure you have at least one user configured in Auth0.&lt;br /&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Create a new client in Auth0 named &amp;ldquo;Jenkins&amp;rdquo;.  (I chose &amp;ldquo;regular web app&amp;rdquo; for the type, but it doesn&amp;rsquo;t really matter.)
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Securing-Jenkins-with-Auth0/auth0-create-client.png&#34; alt=&#34;Create client&#34; /&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;After creating the client, scroll down on the settings tab to the &amp;ldquo;Allowed Callback URLs section&amp;rdquo; and add a callback in this form: &lt;code&gt;&amp;lt;your jenkins url&amp;gt;/securityRealm/finishLogin&lt;/code&gt;
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Securing-Jenkins-with-Auth0/allowed-callback-urls.png&#34; alt=&#34;Add callback url&#34; /&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Scroll all the way down in settings tab and click on &amp;ldquo;Show Advanced Settings&amp;rdquo;, then select the &amp;ldquo;Endpoints&amp;rdquo; tab
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Securing-Jenkins-with-Auth0/saml-metadata-url.png&#34; alt=&#34;SAML Metadata URL&#34; /&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Copy the &amp;ldquo;SAML Metadata URL&amp;rdquo; and open a new browser window, paste it, and hit enter.  An XML file should be downloaded.  Save it for when we configure Jenkins.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Scroll back to the top of the client configuration page and select the &amp;ldquo;Addons&amp;rdquo; tab.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Turn on the &amp;ldquo;SAML2 Web App&amp;rdquo; addon.
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Securing-Jenkins-with-Auth0/addons.png&#34; alt=&#34;Addons&#34; /&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;In the configuration box for the addon, make sure and set the &lt;code&gt;recipient&lt;/code&gt; and &lt;code&gt;audience&lt;/code&gt; fields to your Jenkins callback URL.
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Securing-Jenkins-with-Auth0/saml-config.png&#34; alt=&#34;SAML Config&#34; /&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;After saving (bottom of the page), click on the &amp;ldquo;Debug&amp;rdquo; button.  You will be asked to login.  Login using one of your test user accounts.  If the configuration is successful you should see a page that looks like this:
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Securing-Jenkins-with-Auth0/success.png&#34; alt=&#34;Success&#34; /&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;configure-jenkins:fbd9d0e77cb5c8a95f7dee502da3a88c&#34;&gt;Configure Jenkins&lt;/h2&gt;
+
+&lt;h3 id=&#34;jenkins-plugins:fbd9d0e77cb5c8a95f7dee502da3a88c&#34;&gt;Jenkins Plugins&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Install the SAML Plugin: &lt;a href=&#34;https://wiki.jenkins-ci.org/display/JENKINS/SAML+Plugin&#34;&gt;https://wiki.jenkins-ci.org/display/JENKINS/SAML+Plugin&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Install the Role Strategy Plugin: &lt;a href=&#34;https://wiki.jenkins-ci.org/display/JENKINS/Role+Strategy+Plugin&#34;&gt;https://wiki.jenkins-ci.org/display/JENKINS/Role+Strategy+Plugin&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;configure-jenkins-global-security:fbd9d0e77cb5c8a95f7dee502da3a88c&#34;&gt;Configure Jenkins global security&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Go to &amp;ldquo;Manage Jenkins&amp;rdquo; -&amp;gt; &amp;ldquo;Configure Global Security&amp;rdquo;
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Securing-Jenkins-with-Auth0/configure-global-security.png&#34; alt=&#34;Configure global security&#34; /&gt;&lt;/li&gt;
+&lt;li&gt;Check the &amp;ldquo;Enable security&amp;rdquo; checkbox&lt;/li&gt;
+&lt;li&gt;Select &amp;ldquo;SAML 2.0&amp;rdquo; radio button&lt;/li&gt;
+&lt;li&gt;Paste XML from the Auth0 metadata URL downloaded previously into the &amp;ldquo;IdP Metadata&amp;rdquo; field&lt;/li&gt;
+&lt;li&gt;(Optional) Add the field you want to use for the username.  We are using &amp;ldquo;&lt;a href=&#34;http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress&amp;quot;&#34;&gt;http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress&amp;quot;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Under &amp;ldquo;Authorization&amp;rdquo;, choose &amp;ldquo;Role-Based Strategy&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;Click &amp;ldquo;Save&amp;rdquo;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;manage-and-assign-roles-for-jenkins-auth0-interaction:fbd9d0e77cb5c8a95f7dee502da3a88c&#34;&gt;Manage and Assign Roles for Jenkins/Auth0 interaction&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Go to &amp;ldquo;Manage Jenkins&amp;rdquo; -&amp;gt; &amp;ldquo;Manage and Assign Roles&amp;rdquo; -&amp;gt; &amp;ldquo;Manage Roles&amp;rdquo;&lt;/li&gt;
+&lt;li&gt;Add any roles that makes sense for your use case and assign them permissions.  In our case we added an &amp;ldquo;admin&amp;rdquo; and
+&amp;ldquo;authenticated&amp;rdquo; role.  (Note that roles are different from groups.  In the default setup, anyone who logs in via Auth0 will be assigned to an &amp;ldquo;authenticated&amp;rdquo; &lt;strong&gt;group&lt;/strong&gt;.  If you want to use more specialized groups in Auth0, you&amp;rsquo;ll need to add the Auth0 Authorization Extension.  See &lt;a href=&#34;https://auth0.com/docs/extensions/authorization-extension.&#34;&gt;https://auth0.com/docs/extensions/authorization-extension.&lt;/a&gt;)&lt;/li&gt;
+&lt;li&gt;To match a role to an Auth0 group (remember they are different), navigate to &amp;ldquo;Manage Jenkins&amp;rdquo; -&amp;gt; &amp;ldquo;Manage and Assign Roles&amp;rdquo; -&amp;gt; &amp;ldquo;Assign Roles&amp;rdquo;
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Securing-Jenkins-with-Auth0/assign-roles.png&#34; alt=&#34;Assign Roles&#34; /&gt;&lt;/li&gt;
+&lt;li&gt;Here you can associate Auth0 groups/users (left column) with roles (columns 2+) by clicking checkboxes.&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;We added the &lt;code&gt;authenticated&lt;/code&gt; group to the &lt;code&gt;authenticated&lt;/code&gt; role we setup previously.&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;To keep non-authenticated users from seeing any of Jenkins, we unchecked all privileges for the &lt;code&gt;Anonymous&lt;/code&gt; group.&lt;/li&gt;
+&lt;li&gt;Save&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;wrapping-up:fbd9d0e77cb5c8a95f7dee502da3a88c&#34;&gt;Wrapping up&lt;/h2&gt;
+
+&lt;p&gt;That&amp;rsquo;s it!  Try it out.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Open an incognito window and navigate to your jenkins URL.&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;You should be presented with an Auth0 login like this:
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Securing-Jenkins-with-Auth0/auth0-login.png&#34; alt=&#34;Auth0 login&#34; /&gt;&lt;/li&gt;
+&lt;li&gt;Once you login, your email address should show up in the top right corner of your Jenkins dashboard.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Congratulations.  You now can use Auth0 to access Jenkins.  Bonus points: setup SSO with your corporate LDAP, AD, Salesforce, or other identity provider.&lt;/p&gt;
+
+&lt;p&gt;Leave a comment below if you have questions or have any suggestions for improving this tutorial.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>DockerCon 2016 Highlights Day 2</title>
+      <link>https://3dsim.github.io/dockercon-2016-highlights-day-2/</link>
+      <pubDate>Wed, 22 Jun 2016 10:03:36 -0600</pubDate>
+      
+      <guid>https://3dsim.github.io/dockercon-2016-highlights-day-2/</guid>
+      <description>
+
+&lt;p&gt;Continuing from &lt;a href=&#34;https://3dsim.github.io/dockercon-2016-highlights-day-1/&#34;&gt;my post from yesterday&lt;/a&gt;&amp;hellip; Here are the Day 2 Notes and Highlights.&lt;/p&gt;
+
+&lt;h1 id=&#34;day-2:31845a37adb5af58320bff08e993d486&#34;&gt;Day 2&lt;/h1&gt;
+
+&lt;h2 id=&#34;keynote:31845a37adb5af58320bff08e993d486&#34;&gt;Keynote&lt;/h2&gt;
+
+&lt;p&gt;Keynote summary&amp;hellip;. monetizing docker.  (This is a good thing because that means new features funded will continue flowing down to the open source offerings.)&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Docker Data Center&lt;/li&gt;
+&lt;li&gt;Docker Trusted Registry&lt;/li&gt;
+&lt;li&gt;Docker Universal Control Plane&lt;/li&gt;
+&lt;li&gt;HP Datacenter Enterprise&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Demo&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Showed SQL Server running in a docker container on linux.  Interesting.&lt;/li&gt;
+&lt;li&gt;Debugging a .net app running in a container from VS Code&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;ADP CTO short talk&amp;hellip; he&amp;rsquo;s very nervous.  Highlight was when he compared microservices to chicken nuggets and monoliths to chickens.  You had to be there.&lt;/p&gt;
+
+&lt;h2 id=&#34;docker-for-ops-operationalize-your-docker-built-apps-in-production:31845a37adb5af58320bff08e993d486&#34;&gt;Docker for Ops: Operationalize your Docker Built Apps in Production&lt;/h2&gt;
+
+&lt;p&gt;Emphasis on Containers as a Service (CaaS) with a focus on agility, portability, and control.&lt;/p&gt;
+
+&lt;p&gt;Considerations for a production docker app&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Scale&lt;/li&gt;
+&lt;li&gt;Security&lt;/li&gt;
+&lt;li&gt;Monitoring&lt;/li&gt;
+&lt;li&gt;Ecosystem&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Docker Data Center handles security in a few different ways&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Provides fine grained access control&lt;/li&gt;
+&lt;li&gt;Integrated content trust.  Pushed images are signed by individuals.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Demo from Evan Hazlett.  (Evan originally wrote Shipyard, which was a Docker Container UI, deployment tool, etc.  Shipyard probably became Docker UCP if I had to guess.)&lt;/p&gt;
+
+&lt;p&gt;UCP&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Can create teams, labels, and permissions for each&lt;/li&gt;
+&lt;li&gt;Supports the new &amp;ldquo;services&amp;rdquo; feature in Docker 1.12&lt;/li&gt;
+&lt;li&gt;Declare state of the services and the cluster takes care of matching the state&lt;/li&gt;
+&lt;li&gt;Integrates with built in load balancing in Docker 1.12&lt;/li&gt;
+&lt;li&gt;Handles rolling deploys&lt;/li&gt;
+&lt;li&gt;Monitoring uses stats Docker API to aggregate data&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Summary&lt;/p&gt;
+
+&lt;p&gt;Basically they have created a full ecosystem management tool with a UI.  Looks nice, but it is rather expensive&amp;hellip; to the tune of $150/node/month.  Wayyyyy too expensive when you consider it doesn&amp;rsquo;t include the compute resources.&lt;/p&gt;
+
+&lt;h2 id=&#34;friendly-microservices:31845a37adb5af58320bff08e993d486&#34;&gt;Friendly Microservices&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Autogenerate documentation&lt;/li&gt;
+&lt;li&gt;Embed monitoring&lt;/li&gt;
+&lt;li&gt;Service should not go down&lt;/li&gt;
+&lt;li&gt;Make your service easy to deploy and scale&lt;/li&gt;
+&lt;li&gt;Consumers should be able to hit the API directly in a non-prod environment&lt;/li&gt;
+&lt;li&gt;Do not require a development environment to troubleshoot &amp;ndash; i.e.  use containers&lt;/li&gt;
+&lt;li&gt;One base url for everything
+
+&lt;ul&gt;
+&lt;li&gt;Use an api gateway, such as Zuul&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Don&amp;rsquo;t use wildcards and set correct domain in cookies&lt;/li&gt;
+&lt;li&gt;Always use HTTPS&lt;/li&gt;
+&lt;li&gt;Separate certs for api vs domain, so if one is compromised, the other still works.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;security-tips-from-twistlock:31845a37adb5af58320bff08e993d486&#34;&gt;Security tips from Twistlock&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Compliance policies, adjust per application&lt;/li&gt;
+&lt;li&gt;Monitor early in production&lt;/li&gt;
+&lt;li&gt;Use active threat control (identify unusual behavior)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;securing-the-container-pipeline:31845a37adb5af58320bff08e993d486&#34;&gt;Securing the Container Pipeline&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://3dsim.github.io/images/posts/DockerCon-2016-Highlights-Day-2/security1.jpg&#34; alt=&#34;Securing all the steps&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Threats&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Run-time
+
+&lt;ul&gt;
+&lt;li&gt;Container exploits&lt;/li&gt;
+&lt;li&gt;Breaking out of container&lt;/li&gt;
+&lt;li&gt;Cross container attacks&lt;/li&gt;
+&lt;li&gt;DDoS&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;At rest or during transport
+
+&lt;ul&gt;
+&lt;li&gt;Tampering of images&lt;/li&gt;
+&lt;li&gt;Unpatched OS or applications&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Mitigations&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Platform security&lt;/li&gt;
+&lt;li&gt;Monitoring and Response&lt;/li&gt;
+&lt;li&gt;Access Controls&lt;/li&gt;
+&lt;li&gt;Content Security&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Access Control&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;LDAP over SSL for Docker image transaction or use mutual TLS authentication for registry replication&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Container Integrity&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Use signed images&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Host hardening:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Frequent patching&lt;/li&gt;
+&lt;li&gt;Install only needed components and libraries&lt;/li&gt;
+&lt;li&gt;Grsecurity/PaX for the kernel&lt;/li&gt;
+&lt;li&gt;File system integrity monitoring&lt;/li&gt;
+&lt;li&gt;Leverage Linux isolation capabilities&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Container Hardening:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Base image and app with latest updates/patches&lt;/li&gt;
+&lt;li&gt;Leverage User namespaces (run as low privilege user on host)&lt;/li&gt;
+&lt;li&gt;Install only needed components and libraries (i.e. no gcc, bash, or ssh)&lt;/li&gt;
+&lt;li&gt;Avoid using Docker with &amp;ndash;privileged flag&lt;/li&gt;
+&lt;li&gt;Use &amp;ndash;read-only when running containers&lt;/li&gt;
+&lt;li&gt;Avoid providing access to the docker user and group&lt;/li&gt;
+&lt;li&gt;Limit and/or separate host and kernel device access&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Vulnerability management:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Image scans with tools, such as docker security scanning.&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;Operating system&lt;/li&gt;
+&lt;li&gt;Application source code and libraries&lt;/li&gt;
+&lt;li&gt;Network Scans with traditional vulnerability scanners.
+
+&lt;ul&gt;
+&lt;li&gt;Discovery&lt;/li&gt;
+&lt;li&gt;Exposed services&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Auto and manual source code edits.&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;Remediation - have prioritization and SLAs for patching&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Network Infrastructure&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Use an Intrusion Detection System (IDS)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Monitoring hosts:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;All host logs are saved&lt;/li&gt;
+&lt;li&gt;Use machine learning to analyze logs&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Monitoring containers and Apps&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Monitor all logs, similar to host&lt;/li&gt;
+&lt;li&gt;Network activity monitoring&lt;/li&gt;
+&lt;li&gt;Disk activity monitoring&lt;/li&gt;
+&lt;li&gt;Memory monitoring - docker and container process activity&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Digital Forensics&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Have incident response plan/policies in place&lt;/li&gt;
+&lt;li&gt;Memory, disk, network forensics&lt;/li&gt;
+&lt;li&gt;Build a super timeline of events using various tools like:
+
+&lt;ul&gt;
+&lt;li&gt;Sleuth Kit&lt;/li&gt;
+&lt;li&gt;Plaso&lt;/li&gt;
+&lt;li&gt;dd: Raw disk image&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Memory forensics&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Useful because everything runs in memory&lt;/li&gt;
+&lt;li&gt;Faster discovery vs disk forensics&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://3dsim.github.io/images/posts/DockerCon-2016-Highlights-Day-2/security-summary.jpg&#34; alt=&#34;Security Summary&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Conclusion&lt;/p&gt;
+
+&lt;p&gt;Lots of good information to incorporate.  Definitely could dedicate a full time position to this.&lt;/p&gt;
+
+&lt;h2 id=&#34;docker-networking-deep-dive:31845a37adb5af58320bff08e993d486&#34;&gt;Docker networking deep dive&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;libnetwork - not just a driver interface
+
+&lt;ul&gt;
+&lt;li&gt;handles all docker container networking&lt;/li&gt;
+&lt;li&gt;ip address management&lt;/li&gt;
+&lt;li&gt;multi-host networking&lt;/li&gt;
+&lt;li&gt;service discovery&lt;/li&gt;
+&lt;li&gt;load balancing&lt;/li&gt;
+&lt;li&gt;allows for extensions/plugins&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;New features in 1.12
+&lt;img src=&#34;https://3dsim.github.io/images/posts/DockerCon-2016-Highlights-Day-2/networking.jpg&#34; alt=&#34;New networking features&#34; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Cluster aware&lt;/li&gt;
+&lt;li&gt;De-centralized control plane&lt;/li&gt;
+&lt;li&gt;Highly scalable&lt;/li&gt;
+&lt;li&gt;Routing mesh&lt;/li&gt;
+&lt;li&gt;Load balancing&lt;/li&gt;
+&lt;li&gt;Service discovery&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Conclusion&lt;/p&gt;
+
+&lt;p&gt;Docker 1.12 is going to make a lot of engine-to-engine communication seamless.  I left early on this talk though because the deep dive was deeper than I needed.&lt;/p&gt;
+
+&lt;h2 id=&#34;project-tesson-demo:31845a37adb5af58320bff08e993d486&#34;&gt;Project Tesson Demo&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://3dsim.github.io/images/posts/DockerCon-2016-Highlights-Day-2/tesson.jpg&#34; alt=&#34;@kobolog&#34; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&#34;https://twitter.com/kobolog&#34;&gt;@kobolog&lt;/a&gt; shared his open source project called &amp;ldquo;Tesson&amp;rdquo; that maximizes resource usage by analyzing a machine&amp;rsquo;s hardware topology and handles spawning/pinning instances of a Go app to utilize all the hardware capability.  &lt;a href=&#34;https://github.com/kobolog/tesson&#34;&gt;https://github.com/kobolog/tesson&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Caught the tail end of this talk&amp;hellip; very impressive.  Will have to try it out on some of our CPU intensive Go apps.&lt;/p&gt;
+
+&lt;h2 id=&#34;summary:31845a37adb5af58320bff08e993d486&#34;&gt;Summary&lt;/h2&gt;
+
+&lt;p&gt;DockerCon was great.  Day 1 was the cool announcements.  Day 2 was the sales pitch&amp;hellip; at least for the keynote.  Both days were informative.  The conference was well organized.  Food was good.  Good set of speakers.  Great location.  And the weather was epic.&lt;/p&gt;
+
+&lt;p&gt;Overall, can&amp;rsquo;t complain&amp;hellip;. I got out mountain biking both days.  Highly recommend Duthie Hill and Tiger Mountain.  And if you need a bike rental check out &lt;a href=&#34;http://compassoutdooradventures.com&#34;&gt;http://compassoutdooradventures.com&lt;/a&gt;.  They deliver/pickup at both destinations.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://3dsim.github.io/images/posts/DockerCon-2016-Highlights-Day-2/mountain-biking.jpg&#34; alt=&#34;Mountain Biking at Tiger Mountain&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>DockerCon 2016 Highlights Day 1</title>
+      <link>https://3dsim.github.io/dockercon-2016-highlights-day-1/</link>
+      <pubDate>Tue, 21 Jun 2016 10:03:36 -0600</pubDate>
+      
+      <guid>https://3dsim.github.io/dockercon-2016-highlights-day-1/</guid>
+      <description>
+
+&lt;p&gt;At 3DSIM we believe in continuing education and investing in our developers.  We put that into practice in many ways and one of those ways is to encourage developers to attend a conference.  This year I&amp;rsquo;m attending DockerCon in Seattle.  Here are some running higlights&amp;hellip;&lt;/p&gt;
+
+&lt;h1 id=&#34;day-1:32d0795527c2abb0494e25ae7746bd71&#34;&gt;Day 1&lt;/h1&gt;
+
+&lt;h2 id=&#34;keynote-highlights:32d0795527c2abb0494e25ae7746bd71&#34;&gt;Keynote highlights&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&#34;https://3dsim.github.io/images/posts/DockerCon-2016-Highlights-Day-1/dockercon-day1-keynote.jpg&#34; alt=&#34;Success&#34; /&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Docker for Mac allows you to debug code running in a container and live reload it.  (Need to figure out details)&lt;/li&gt;
+&lt;li&gt;Docker for Mac Beta is now open to anyone at &lt;a href=&#34;https://www.docker.com/products/docker#/mac&#34;&gt;https://www.docker.com/products/docker#/mac&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Docker 1.12 will have orchestration features built-in.  &lt;a href=&#34;https://blog.docker.com/2016/06/docker-1-12-built-in-orchestration/&#34;&gt;https://blog.docker.com/2016/06/docker-1-12-built-in-orchestration/&lt;/a&gt;&lt;br /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Swarm mode.  Self forming, self-healing.  No external data store required (e.g. Consul or etcd)&lt;/li&gt;
+&lt;li&gt;Secure node to node communication.&lt;/li&gt;
+&lt;li&gt;There is now a docker service API that handles scaling, rolling updates, scheduling, application specific health checks, rescheduling on node failure.  This look amazing&amp;hellip;&lt;/li&gt;
+&lt;li&gt;Built in routing.  Load balancing, DNS based service discovery, no separate cluster to setup.&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Example commands with new built-in orchestration:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;docker service create --name vote -p 8080:80 instavote/vote
+docker service ls
+docker service tasks vote
+docker service scale vote=6
+docker service update vote --image instavote/vote:movies
+docker service update vote --image instavote/vote:indent --update-parallelism 2 --update-delay 10s
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Docker for AWS and Docker for Azure.  (Interesting.)&lt;br /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&amp;ldquo;Seamless&amp;rdquo; (Not sure we will give up Ansible for deploying&amp;hellip;)&lt;/li&gt;
+&lt;li&gt;Will have to find more links to details&amp;hellip; sounds like specialized cloudformation templates.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;(Experimental) Distributed Application Bundle (DAB)&amp;hellip; a format for multi-container applications.&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;talk-highlights-the-golden-ticket-docker-and-high-security-microservices:32d0795527c2abb0494e25ae7746bd71&#34;&gt;Talk Highlights: &amp;ldquo;The Golden Ticket: Docker and High Security Microservices&amp;rdquo;&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&#34;http://dockercon2016.sched.org/event/70Ni&#34;&gt;http://dockercon2016.sched.org/event/70Ni&lt;/a&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Use TLS&lt;/li&gt;
+&lt;li&gt;Least trust/Least access&lt;/li&gt;
+&lt;li&gt;Security starts with the base OS - does the base OS manage security in a &amp;ldquo;good&amp;rdquo; way?  Start with a &amp;ldquo;minimal&amp;rdquo; base&lt;/li&gt;
+&lt;li&gt;Minimal kernel&lt;/li&gt;
+&lt;li&gt;Should also have minimal containers.  Larger containers = more patching, disk space, attack surface and post exploitation utilities.&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;He&amp;rsquo;s a fan of Go&amp;hellip; only put a single binary in the Docker container.  (Shot out to Richard Bolt who gave a talk on this at our last SLC Docker meetup.)&lt;/li&gt;
+&lt;li&gt;Use Mandatory Access Control (MAC) - which is enabled by default in Docker.
+
+&lt;ul&gt;
+&lt;li&gt;Use aa-genprof to generate an apparmor profile, or use Bane&lt;/li&gt;
+&lt;li&gt;Profile generators are not perfect, keep an eye after switching to &amp;ldquo;mandatory&amp;rdquo; mode&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;Default seccomp filter permits 304 calls.&lt;/li&gt;
+&lt;li&gt;Can use sysdig to figure out what calls are open on the system (requires kernel module)&lt;/li&gt;
+&lt;li&gt;Pitfalls of seccomp:&lt;/li&gt;
+&lt;li&gt;Fragile&lt;/li&gt;
+&lt;li&gt;Libseccomp - go library&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;High security docker microservices&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Enable user namespace&lt;/li&gt;
+&lt;li&gt;Use specific apparmor if possible&lt;/li&gt;
+&lt;li&gt;Seccomp whitelist&lt;/li&gt;
+&lt;li&gt;harden host system&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Handling secrets&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Avoid environment variables and flat files&lt;/li&gt;
+&lt;li&gt;Use something like Vault &lt;a href=&#34;https://github.com/hashicorp/vault&#34;&gt;https://github.com/hashicorp/vault&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Networking&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Use TLS.  All network traffic should be encrypted and authenticated.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Security in general&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Develop threat models for each application&lt;/li&gt;
+&lt;li&gt;Log everything and all access.  Keep logs centrally.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;docker-for-developers-1-and-2:32d0795527c2abb0494e25ae7746bd71&#34;&gt;Docker for Developers 1 and 2&lt;/h2&gt;
+
+&lt;p&gt;Various demos of how native Docker for Mac/Windows and Docker Cloud make development easier.  Both show promise.&lt;/p&gt;
+
+&lt;p&gt;Docker Cloud demos involved too much clicking and UI work&amp;hellip; will have to investigate what APIs are available.&lt;/p&gt;
+
+&lt;p&gt;Installed Docker for Mac yesterday and so far so good.&lt;/p&gt;
+
+&lt;h2 id=&#34;immutable-infrastructure:32d0795527c2abb0494e25ae7746bd71&#34;&gt;Immutable Infrastructure&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Limit number of dependencies and libraries in projects&lt;/li&gt;
+&lt;li&gt;Shorten lead time&lt;/li&gt;
+&lt;li&gt;High performing organizations:
+
+&lt;ul&gt;
+&lt;li&gt;Deploy more often&lt;/li&gt;
+&lt;li&gt;Lead time is short&lt;/li&gt;
+&lt;li&gt;High change success rate&lt;/li&gt;
+&lt;li&gt;Low MTTR&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Overall, entertaining talk without a lot of &amp;ldquo;new&amp;rdquo; content.&lt;/p&gt;
+
+&lt;h2 id=&#34;summary:32d0795527c2abb0494e25ae7746bd71&#34;&gt;Summary&lt;/h2&gt;
+
+&lt;p&gt;Good first day.  Highlight for me is Docker 1.12 orchestration features&amp;hellip; will be using those in our pipelines as soon as they become available.&lt;/p&gt;
+
+&lt;p&gt;See my day 2 notes here: &lt;a href=&#34;https://3dsim.github.io/dockercon-2016-highlights-day-2/&#34;&gt;DockerCon 2016 Highlights Day 2&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Using Hugo and Wercker to Create and Automate Your Own Site</title>
+      <link>https://3dsim.github.io/using-hugo-and-wercker-to-create-and-automate-your-own-site/</link>
+      <pubDate>Sat, 28 May 2016 15:51:23 -0600</pubDate>
+      
+      <guid>https://3dsim.github.io/using-hugo-and-wercker-to-create-and-automate-your-own-site/</guid>
+      <description>
+
+&lt;p&gt;As engineers making our own blog, we all naturally want to make it AAAAAAWESOOOME.  We want a cool language.  We want to use git everywhere.  We want PRs!  We want it to be fast.  We want automation, lots and lots of automation.  We also want it simple.  Like &amp;ldquo;1 or 2 hours&amp;rdquo; simple.&lt;/p&gt;
+
+&lt;p&gt;This blog you&amp;rsquo;re reading has all of that.&lt;/p&gt;
+
+&lt;p&gt;It&amp;hellip;. Is&amp;hellip;.. Awesome.&lt;/p&gt;
+
+&lt;p&gt;But we can&amp;rsquo;t really take credit.  Thanks to &lt;a href=&#34;https://gohugo.io&#34;&gt;Hugo&lt;/a&gt;, &lt;a href=&#34;https://github.com&#34;&gt;Github&lt;/a&gt;, and &lt;a href=&#34;http://wercker.com&#34;&gt;Wercker&lt;/a&gt; you too can have an have an AAAAAAWESOOOME site or blog.&lt;/p&gt;
+
+&lt;p&gt;What this combination gives you:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Cool language?&lt;/strong&gt;  Hugo is based on &lt;a href=&#34;https://golang.org/&#34;&gt;Go&lt;/a&gt;.  Check.  (My love of Go will be professed in a future post.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Git integration?&lt;/strong&gt;  This site is deployed to &lt;a href=&#34;https://pages.github.com&#34;&gt;github pages&lt;/a&gt;.  This site is regenerated and deployed every time we push to the main repo.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PRs?&lt;/strong&gt;  We only push to the main repo through PRs from our individual forks.  For those new to git flow, check out this article: &lt;a href=&#34;http://scottchacon.com/2011/08/31/github-flow.html&#34;&gt;http://scottchacon.com/2011/08/31/github-flow.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Fast?&lt;/strong&gt;  Yep, super fast.  Hugo is a static site generator, meaning it creates plain old HTML.  Browsers are very good at serving HTML quickly.  Also, Hugo generates the static content very quickly&amp;hellip; about 1 ms per piece of content.  For this site, it seems instantaneous.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Automation?&lt;/strong&gt;  That&amp;rsquo;s where Wercker comes in.  You can have build and deploy steps for your github repo that get triggered automatically.  Credit goes to &lt;a href=&#34;https://github.com/ArjenSchwarz/wercker-step-hugo-build&#34;&gt;https://github.com/ArjenSchwarz/wercker-step-hugo-build&lt;/a&gt; for creating a Hugo build step, and to &lt;a href=&#34;https://github.com/lvivier/step-gh-pages&#34;&gt;https://github.com/lvivier/step-gh-pages&lt;/a&gt; for the step for deploying to Github Pages.&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Simple?&lt;/strong&gt;  Honestly, start to finish it took me a full day to get everything working&amp;hellip; but that includes research time.  If you&amp;rsquo;re reading this, then you should be able to do it in a couple hours.  I&amp;rsquo;ve done some of the research for you.  (i.e.  I found the only link you will need below.)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Pretty?&lt;/strong&gt;  That wasn&amp;rsquo;t in my original list above&amp;hellip; pffft, engineers don&amp;rsquo;t need &amp;ldquo;pretty.&amp;rdquo;  Well, I like pretty.  Sue me.  Visit &lt;a href=&#34;https://themes.gohugo.io&#34;&gt;https://themes.gohugo.io&lt;/a&gt; to get a taste of what you could do by simply cloning the theme into your &amp;ldquo;themes&amp;rdquo; directory.&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;You&amp;rsquo;re probably saying&amp;hellip; &amp;ldquo;Sounds awesome.  How do I do it?&amp;rdquo;&lt;/p&gt;
+
+&lt;p&gt;Simple.  The guide to awesome is here: &lt;a href=&#34;http://gohugo.io/tutorials/automated-deployments&#34;&gt;http://gohugo.io/tutorials/automated-deployments&lt;/a&gt;.  Follow the steps in that tutorial.  If you want to see what I did while following those steps, read on&amp;hellip;&lt;/p&gt;
+
+&lt;h2 id=&#34;an-example-our-corporate-site:1ea8ed4e6ee92abf713dabb5b8f697e5&#34;&gt;An example, our corporate site&lt;/h2&gt;
+
+&lt;p&gt;Following my own advice, I am now embarking on converting &lt;a href=&#34;http://3dsim.com&#34;&gt;our corporate site&lt;/a&gt; to Hugo and Wercker.  I&amp;rsquo;m going to capture the steps I take for posterity&amp;hellip; and to show that setting up an awesome site from scratch is relatively straight forward.&lt;/p&gt;
+
+&lt;h3 id=&#34;hugo-site-setup:1ea8ed4e6ee92abf713dabb5b8f697e5&#34;&gt;Hugo site setup&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Create github repo.  e.g. &lt;a href=&#34;https://github.com/3DSIM/corporate-site&#34;&gt;https://github.com/3DSIM/corporate-site&lt;/a&gt;&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;Fork the repo.&lt;/li&gt;
+&lt;li&gt;Clone the fork. &lt;code&gt;git clone git@github.com:ryanwalls/corporate-site.git&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Generate a new site directory structure.  &lt;code&gt;hugo new site corporate-site --force&lt;/code&gt;  (The force option is necessary because our directory is not empty.)&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;Go into the cloned directory.  &lt;code&gt;cd corporate-site&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Create a git branch to work in.  &lt;code&gt;git checkout -b new-site&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Install a theme
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;mkdir themes &amp;amp;&amp;amp; cd themes&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Clone a theme.  E.g. &lt;code&gt;git clone git@github.com:digitalcraftsman/hugo-agency-theme.git&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;In this case they had a sample &lt;code&gt;config.toml&lt;/code&gt;, so copy it to root of your project &lt;code&gt;cp themes/hugo-agency-theme/exampleSite/config.toml .&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Remove the &lt;code&gt;.git&lt;/code&gt; folder from the cloned theme: &lt;code&gt;rm -rf themes/hugo-agency-theme/.git&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Test that site starts &lt;code&gt;hugo server --buildDrafts --theme=hugo-agency-theme&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;You&amp;rsquo;ll want to customize your &lt;code&gt;config.toml&lt;/code&gt; to fit your site.  (if you&amp;rsquo;re new to toml read &lt;a href=&#34;https://npf.io/2014/08/intro-to-toml&#34;&gt;https://npf.io/2014/08/intro-to-toml&lt;/a&gt;).  See the &lt;a href=&#34;https://github.com/3DSIM/corporate-site&#34;&gt;source for the corporate site&lt;/a&gt; to see what we did with ours.&lt;/li&gt;
+&lt;li&gt;Eventually you&amp;rsquo;ll want to put content inside the &lt;code&gt;content&lt;/code&gt; directory, but for now just put an empty file, README, or some other placeholder in there so that the directory gets committed later.  e.g.  &lt;code&gt;touch content/.keep&lt;/code&gt;.  This is to accommodate one of the wercker build scripts we will use later that requires the &lt;code&gt;content&lt;/code&gt; folder exists.&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;configure-wercker:1ea8ed4e6ee92abf713dabb5b8f697e5&#34;&gt;Configure Wercker&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Create a &lt;code&gt;wercker.yml&lt;/code&gt; file in the root of the site directory&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-yaml&#34;&gt;---
+  box: debian
+  build:
+    steps:
+      - arjen/hugo-build@1.9.2:
+          version: &amp;quot;0.15&amp;quot;
+          theme: hugo-agency-theme
+          flags: --buildDrafts=true
+  deploy:
+    steps:
+      - install-packages:
+          packages: git ssh-client
+      - lukevivier/gh-pages@0.2.1:
+          token: $GIT_TOKEN
+          basedir: public
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Create application inside Wercker
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Using-Hugo-and-Wercker-to-Create-and-Automate-Your-Own-Site/wercker-create-application_small.png&#34; alt=&#34;Create application&#34; /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;NOTE: This is where the tutorial linked above that is on the Hugo documentation site is out of date.  Wercker just recently announced pipelines and workflows.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Click on &amp;ldquo;Manage Workflows&amp;rdquo; while in your application
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Using-Hugo-and-Wercker-to-Create-and-Automate-Your-Own-Site/manage-workflows_small.png&#34; alt=&#34;Manage workflows&#34; /&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Click on &amp;ldquo;Add pipeline&amp;rdquo;
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Using-Hugo-and-Wercker-to-Create-and-Automate-Your-Own-Site/add-pipeline_small.png&#34; alt=&#34;Add pipeline&#34; /&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Configure the pipeline.  This references your deploy step in your &lt;code&gt;wercker.yml&lt;/code&gt;.
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Using-Hugo-and-Wercker-to-Create-and-Automate-Your-Own-Site/pipeline-config_small.png&#34; alt=&#34;Configure pipeline&#34; /&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;After you configure the pipeline, the next page allows you to configure environment variables for the pipeline.  Before filling this in, go to the next step&amp;hellip; but keep this page open.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Wercker needs to be able to access Github on your behalf to deploy to Github Pages.  To give wercker access, we will create a Personal Access Token.  If you&amp;rsquo;re new to Personal Access Tokens, here&amp;rsquo;s Github&amp;rsquo;s intro: &lt;a href=&#34;https://help.github.com/articles/creating-an-access-token-for-command-line-use&#34;&gt;https://help.github.com/articles/creating-an-access-token-for-command-line-use&lt;/a&gt;.  Follow the steps in that article to generate a token.  Here&amp;rsquo;s the box I checked for this personal access token:
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Using-Hugo-and-Wercker-to-Create-and-Automate-Your-Own-Site/personal-access-token_small.png&#34; alt=&#34;Personal Access Token&#34; /&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;We can now configure the &lt;code&gt;GIT_TOKEN&lt;/code&gt; environment variable that was defined in the &lt;code&gt;wercker.yml&lt;/code&gt; above.  Copy the personal access token from last step and enter it on the Wercker &amp;ldquo;Environment variables&amp;rdquo; configuration page.  Name it &lt;code&gt;GIT_TOKEN&lt;/code&gt; and set it as protected.  Click &amp;ldquo;Add.&amp;rdquo;
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Using-Hugo-and-Wercker-to-Create-and-Automate-Your-Own-Site/git-token_small.png&#34; alt=&#34;Configure GIT_TOKEN&#34; /&gt;.&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;We now need to configure our workflow to use the &amp;ldquo;deploy&amp;rdquo; step we just defined.  Click on the &amp;ldquo;&amp;lt; Workflows&amp;rdquo; link.
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Using-Hugo-and-Wercker-to-Create-and-Automate-Your-Own-Site/workflows_small.png&#34; alt=&#34;Workflows link&#34; /&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Then click the &amp;ldquo;+&amp;rdquo; button after your &amp;ldquo;build&amp;rdquo; step
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Using-Hugo-and-Wercker-to-Create-and-Automate-Your-Own-Site/clickworkflowplus_small.png&#34; alt=&#34;Add workflow step&#34; /&gt;.&lt;/p&gt;
+
+&lt;p&gt;And configure the deploy step to deploy your &amp;ldquo;master&amp;rdquo; branch.  Click &amp;ldquo;Add.&amp;rdquo;
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Using-Hugo-and-Wercker-to-Create-and-Automate-Your-Own-Site/workflow-step_small.png&#34; alt=&#34;Configure workflow step&#34; /&gt;.&lt;/p&gt;
+
+&lt;h3 id=&#34;push-the-first-version-of-the-site:1ea8ed4e6ee92abf713dabb5b8f697e5&#34;&gt;Push the first version of the site&lt;/h3&gt;
+
+&lt;p&gt;You are now ready to create a PR with your changes.  When the PR is merged, Wercker should trigger a build and deploy automatically.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;git add .&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;git commit -m &amp;quot;Add theme to site&amp;quot;&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;git push&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Navigate to your fork on Github and create a PR.  See &lt;a href=&#34;https://help.github.com/articles/using-pull-requests&#34;&gt;https://help.github.com/articles/using-pull-requests&lt;/a&gt;.  NOTE: The wercker pipeline will trigger when you create a PR, which is great because you know before you merge if you broke the build.  But in this first PR, the build will always fail because we haven&amp;rsquo;t added a &lt;code&gt;wercker.yml&lt;/code&gt;.
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Using-Hugo-and-Wercker-to-Create-and-Automate-Your-Own-Site/pr_small.png&#34; alt=&#34;PR&#34; /&gt;.&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;Merge in your changes (after reviewing with someone else of course).&lt;br /&gt;&lt;/li&gt;
+&lt;li&gt;Go to Wercker and see if your build is working.  If you see this at the end, you succeeded!
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Using-Hugo-and-Wercker-to-Create-and-Automate-Your-Own-Site/success_small.png&#34; alt=&#34;Success&#34; /&gt;.&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;success:1ea8ed4e6ee92abf713dabb5b8f697e5&#34;&gt;Success&lt;/h3&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Navigate to your new site at &lt;code&gt;http://&amp;lt;your github username or organization&amp;gt;.github.io/&amp;lt;your site&#39;s repo name&amp;gt;&lt;/code&gt;, e.g. &lt;a href=&#34;http://3dsim.github.io/corporate-site&#34;&gt;http://3dsim.github.io/corporate-site&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;It should like similar to this&amp;hellip; (This screenshot was taken with only a couple changes to the &lt;code&gt;config.toml&lt;/code&gt;.)
+&lt;img src=&#34;https://3dsim.github.io/images/posts/Using-Hugo-and-Wercker-to-Create-and-Automate-Your-Own-Site/final_small.png&#34; alt=&#34;Final view&#34; /&gt;.&lt;/p&gt;
+
+&lt;p&gt;If you made it this far, you now have a fully automated site or blog using Hugo and Wercker.  Go pat yourself on the back and get some coffee.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Hello World</title>
+      <link>https://3dsim.github.io/hello-world/</link>
+      <pubDate>Tue, 24 May 2016 07:10:35 -0600</pubDate>
+      
+      <guid>https://3dsim.github.io/hello-world/</guid>
+      <description>&lt;p&gt;Welcome!  We are the software engineering team at 3DSIM.  This is our blog.&lt;/p&gt;
+
+&lt;p&gt;In these pages we plan to document and share how we practice the craft of software
+development.  Subscribe and enjoy!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
